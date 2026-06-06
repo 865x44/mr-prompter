@@ -1,10 +1,10 @@
 # Prompt Engineer Skill — Overview
 
-A production-ready prompt engineering skill. Provides seven modes (**Generate**, **Verify**, **Improve**, **Chain**, **Model Select**, **Diagnose**, **Extract**) backed by **28 techniques**, **13 failure patterns**, **58 ready-to-use prompts**, **6 model profiles**, and **10 research-backed citations**.
+A production-ready prompt engineering skill. Provides seven modes (**Generate**, **Verify**, **Improve**, **Chain**, **Model Select**, **Diagnose**, **Extract**) backed by **31 techniques**, **13 failure patterns**, **58 ready-to-use prompts**, **6 model profiles**, and **10 research-backed citations**.
 
 ## Stats (verified)
 
-- **28 techniques** across reasoning, system, creative, and analytic categories
+- **31 techniques** across reasoning, system, creative, and analytic categories
 - **10 research-backed** with explicit citations (CoT: 13% → 41%, ToT: 4% → 74%, CoV: hallucinations ↓80%)
 - **58 ready-to-use prompts** (system, task, chain, template, meta)
 - **6 model profiles** with platform-specific rules (Claude, GPT-4.1, o3, Gemini, DeepSeek, Sonar)

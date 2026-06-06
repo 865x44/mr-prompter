@@ -1,6 +1,6 @@
 # Mr. Prompter
 
-> **Prompt engineering toolkit:** 7 specialized modes, 28 techniques, 58 ready-to-use prompts, security-first assessment, model selection framework.
+> **Prompt engineering toolkit:** 7 specialized modes, 31 techniques, 58 ready-to-use prompts, security-first assessment, model selection framework.
 
 Write prompts. Audit them. Fix broken sessions. Extract reusable templates from conversations. Pick the right AI model. All in one skill.
 
@@ -140,7 +140,7 @@ prompt-engineer/
 ├── SKILL.md              # Core skill definition (entry point)
 ├── README.md             # This file
 ├── knowledge/
-│   └── index.json        # Searchable index of 28 techniques
+│   └── index.json        # Searchable index of 31 techniques
 ├── references/           # Knowledge base (loaded on demand)
 │   ├── context.md        # Overview, platform rules, model quick-ref
 │   ├── meta.md           # Principles, anti-patterns, emergency fixes
@@ -243,7 +243,7 @@ python scripts/prompt_engineer.py list --category reasoning
 
 ### v1.0
 - Initial release: GENERATE, VERIFY, IMPROVE, CHAIN modes
-- 28 techniques, 13 failure patterns, 10 research-backed citations, 58 prompts, CLI tools
+- 31 techniques, 13 failure patterns, 10 research-backed citations, 58 prompts, CLI tools
 
 ---
 
