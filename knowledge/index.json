@@ -1,0 +1,390 @@
+{
+  "version": "1.1.0",
+  "stats": {
+    "techniques": 28,
+    "patterns": 5,
+    "templates": 3,
+    "anti_patterns": 8,
+    "failure_patterns": 13,
+    "session_archetypes": 6,
+    "extraction_patterns": 5,
+    "prompt_files": 58,
+    "research_backed": 10
+  },
+  "categories": {
+    "system": {
+      "label": "System Prompt Engineering",
+      "description": "Architecture, hierarchy, safety, injection defense, long-context, platform templates"
+    },
+    "reasoning": {
+      "label": "Reasoning & Cognition",
+      "description": "Chain-of-thought, tree-of-thought, verification, reflexion, metacognition"
+    },
+    "creative": {
+      "label": "Creative & Humor",
+      "description": "Negative prompting, archetypes, absurdism, satire, verbalized sampling"
+    },
+    "analytic": {
+      "label": "Analytic & Anti-Sycophancy",
+      "description": "Anti-sycophancy, epistemic humility, deep analysis, Socratic method"
+    },
+    "meta": {
+      "label": "Meta & Troubleshooting",
+      "description": "Common mistakes, top principles, model-specific guidance"
+    }
+  },
+  "techniques": [
+    {
+      "id": "strategic-chain",
+      "name": "Strategic Prompt Chain",
+      "category": "reasoning",
+      "tags": ["chain", "multi-phase", "distillation", "blind-spots", "deep-analysis", "multi-ai"],
+      "models": ["claude", "gpt-4o", "gemini"],
+      "complexity": "high",
+      "when_to_use": "Deep multi-perspective analysis of a topic across one AI session; use when a single prompt is not enough",
+      "has_snippet": true,
+      "has_examples": true,
+      "research_backed": false
+    },
+    {
+      "id": "chain-of-thought",
+      "name": "Chain of Thought",
+      "category": "reasoning",
+      "tags": ["thinking", "step-by-step", "math", "logic"],
+      "models": ["gpt-4o", "claude", "gemini"],
+      "avoid_for": ["o1", "o3", "deepseek-r1"],
+      "complexity": "low",
+      "when_to_use": "Complex multi-step problems where accuracy > latency",
+      "has_snippet": true,
+      "has_examples": true,
+      "research_backed": true,
+      "gain_reported": "GSM8K: 13% → 41% (zero-shot)"
+    },
+    {
+      "id": "tree-of-thought",
+      "name": "Tree of Thought",
+      "category": "reasoning",
+      "tags": ["thinking", "multi-path", "planning", "puzzles"],
+      "models": ["gpt-4o", "claude", "gemini"],
+      "avoid_for": ["o1", "o3", "deepseek-r1"],
+      "complexity": "medium",
+      "when_to_use": "Puzzles, planning, strategic reasoning, combinatorial tasks",
+      "has_snippet": true,
+      "has_examples": true,
+      "research_backed": true,
+      "gain_reported": "Game of 24: 74% vs 4% (standard CoT)"
+    },
+    {
+      "id": "chain-of-verification",
+      "name": "Chain of Verification",
+      "category": "reasoning",
+      "tags": ["fact-checking", "accuracy", "hallucination-reduction"],
+      "models": ["gpt-4o", "claude", "gemini"],
+      "complexity": "medium",
+      "when_to_use": "Factual accuracy critical; hallucination-prone domains",
+      "has_snippet": true,
+      "has_examples": false,
+      "research_backed": true,
+      "gain_reported": "2x precision, hallucinations ↓80%"
+    },
+    {
+      "id": "reflexion",
+      "name": "Reflexion",
+      "category": "reasoning",
+      "tags": ["self-correction", "reflection", "iterative"],
+      "models": ["gpt-4o", "claude", "gemini"],
+      "avoid_for": ["o1", "o3"],
+      "complexity": "medium",
+      "when_to_use": "Iterative improvement, coding, complex analysis",
+      "has_snippet": true,
+      "has_examples": true,
+      "research_backed": true,
+      "gain_reported": "p < 0.001 across 9 LLMs"
+    },
+    {
+      "id": "step-back-prompting",
+      "name": "Step-Back Prompting",
+      "category": "reasoning",
+      "tags": ["principles", "STEM", "knowledge-qa"],
+      "models": ["gpt-4o", "claude", "gemini"],
+      "complexity": "low",
+      "when_to_use": "STEM problems, knowledge QA requiring foundational concepts",
+      "has_snippet": true,
+      "has_examples": true,
+      "research_backed": true,
+      "gain_reported": "+7% Physics, +11% Chemistry, +27% TimeQA"
+    },
+    {
+      "id": "metacognitive-protocol",
+      "name": "Metacognitive Protocol",
+      "category": "reasoning",
+      "tags": ["self-examination", "critical-thinking", "confidence"],
+      "models": ["gpt-4o", "claude", "gemini"],
+      "complexity": "medium",
+      "when_to_use": "Complex analysis, critical evaluation, decision support",
+      "has_snippet": true,
+      "has_examples": true,
+      "research_backed": true,
+      "gain_reported": "Surpassed all baselines on 10 NLU datasets"
+    },
+    {
+      "id": "self-consistency",
+      "name": "Self-Consistency",
+      "category": "reasoning",
+      "tags": ["consensus", "math", "fixed-answer"],
+      "models": ["gpt-4o", "claude", "gemini"],
+      "avoid_for": ["deepseek-r1"],
+      "complexity": "medium",
+      "when_to_use": "Math with fixed answers, factual questions needing high certainty",
+      "has_snippet": true,
+      "has_examples": true,
+      "research_backed": true,
+      "gain_reported": "+3.9% to +17.9% over CoT"
+    },
+    {
+      "id": "multi-agent-debate",
+      "name": "Multi-Agent Debate",
+      "category": "reasoning",
+      "tags": ["debate", "adversarial", "factuality"],
+      "models": ["gpt-4o", "claude", "gemini"],
+      "complexity": "high",
+      "when_to_use": "Math, factuality, coaching systems, important decisions",
+      "has_snippet": true,
+      "has_examples": true,
+      "research_backed": true,
+      "gain_reported": "+8% on GSM8K"
+    },
+    {
+      "id": "forced-domain-shift",
+      "name": "Forced Domain Shift",
+      "category": "reasoning",
+      "tags": ["creativity", "lateral-thinking", "novelty"],
+      "models": ["gpt-4o", "claude", "gemini"],
+      "complexity": "medium",
+      "when_to_use": "Creative tasks, lateral thinking, breaking clichés",
+      "has_snippet": true,
+      "has_examples": true,
+      "research_backed": true
+    },
+    {
+      "id": "negative-prompting",
+      "name": "Negative Prompting",
+      "category": "creative",
+      "tags": ["suppression", "directness", "anti-ai-isms"],
+      "models": ["gpt-4o", "claude", "gemini", "deepseek-r1"],
+      "complexity": "low",
+      "when_to_use": "Eliminating generic AI voice, enforcing directness, humor",
+      "has_snippet": true,
+      "has_examples": true,
+      "research_backed": false
+    },
+    {
+      "id": "verbalized-sampling",
+      "name": "Verbalized Sampling",
+      "category": "creative",
+      "tags": ["variability", "creativity", "tail-sampling"],
+      "models": ["gpt-4o", "claude", "gemini"],
+      "complexity": "medium",
+      "when_to_use": "When model produces clichés; creative tasks needing novelty",
+      "has_snippet": true,
+      "has_examples": true,
+      "research_backed": false
+    },
+    {
+      "id": "creative-entropy",
+      "name": "Creative Entropy",
+      "category": "creative",
+      "tags": ["chaos", "absurdism", "metaphor"],
+      "models": ["gpt-4o", "claude", "gemini"],
+      "complexity": "high",
+      "when_to_use": "Satire, aggressive trash-talk, surrealist writing",
+      "has_snippet": true,
+      "has_examples": false,
+      "research_backed": false
+    },
+    {
+      "id": "anti-sycophancy",
+      "name": "Anti-Sycophancy",
+      "category": "analytic",
+      "tags": ["honesty", "truth", "directness", "boundaries"],
+      "models": ["gpt-4o", "claude", "gemini", "deepseek-r1"],
+      "complexity": "low",
+      "when_to_use": "Analytical coaching, honest critique, decision support",
+      "has_snippet": true,
+      "has_examples": true,
+      "research_backed": true
+    },
+    {
+      "id": "epistemic-humility",
+      "name": "Epistemic Humility",
+      "category": "analytic",
+      "tags": ["confidence", "uncertainty", "honesty"],
+      "models": ["gpt-4o", "claude", "gemini"],
+      "complexity": "low",
+      "when_to_use": "Research assistance, medical/legal adjacent, any overconfidence risk",
+      "has_snippet": true,
+      "has_examples": false,
+      "research_backed": true
+    },
+    {
+      "id": "toggle-mode-pattern",
+      "name": "Toggle Mode Pattern",
+      "category": "system",
+      "tags": ["modes", "behavior-switching", "objectivity", "commands"],
+      "models": ["any"],
+      "complexity": "low",
+      "when_to_use": "When you need both critical analyst and supportive advisor modes in one session",
+      "has_snippet": true,
+      "has_examples": true,
+      "research_backed": false
+    },
+    {
+      "id": "injection-defense",
+      "name": "Prompt Injection Defense",
+      "category": "system",
+      "tags": ["security", "untrusted-data", "xml", "sandbox"],
+      "models": ["any"],
+      "complexity": "low",
+      "when_to_use": "Any prompt processing external or user-provided data",
+      "has_snippet": true,
+      "has_examples": true,
+      "research_backed": false
+    },
+    {
+      "id": "cold-prompting",
+      "name": "Cold Prompting",
+      "category": "system",
+      "tags": ["objectivity", "depersonalization", "audit"],
+      "models": ["any"],
+      "complexity": "low",
+      "when_to_use": "Audits, peer reviews, comparative analysis — any task requiring emotional neutrality",
+      "has_snippet": true,
+      "has_examples": true,
+      "research_backed": false
+    },
+    {
+      "id": "progressive-disclosure",
+      "name": "Progressive Disclosure",
+      "category": "system",
+      "tags": ["context-management", "agents", "efficiency"],
+      "models": ["claude", "gpt-4o", "gemini"],
+      "complexity": "medium",
+      "when_to_use": "Agent systems, long-context tasks, multi-document analysis",
+      "has_snippet": true,
+      "has_examples": false,
+      "research_backed": false,
+      "gain_reported": "35,000 tokens (6% relevant) → 920 tokens (100% relevant)"
+    },
+    {
+      "id": "narrative-trap",
+      "name": "Narrative Trap Construction",
+      "category": "creative",
+      "tags": ["engagement", "storytelling", "marketing", "conflict"],
+      "models": ["gpt-4o", "claude", "gemini"],
+      "complexity": "medium",
+      "when_to_use": "Marketing copy, blog posts, presentations — any content where engagement is critical",
+      "has_snippet": true,
+      "has_examples": true,
+      "research_backed": false
+    }
+  ],
+  "patterns": [
+    {
+      "id": "contract-core",
+      "name": "Contract Core Pattern",
+      "category": "system",
+      "when_to_use": "Almost always; 10+ message sessions",
+      "structure": "Role → Rules → Format → Injections → Memory"
+    },
+    {
+      "id": "identity-instructions-examples",
+      "name": "Identity/Instructions/Examples Pattern",
+      "category": "system",
+      "when_to_use": "Classification, extraction, format-strict tasks",
+      "structure": "# Identity → # Instructions → # Examples"
+    },
+    {
+      "id": "xml-container",
+      "name": "XML Container Pattern",
+      "category": "system",
+      "when_to_use": "Mixing instructions with large inputs",
+      "structure": "<documents>…</documents> <instructions>…</instructions>"
+    },
+    {
+      "id": "data-top-query-bottom",
+      "name": "Data-top Query-bottom Pattern",
+      "category": "system",
+      "when_to_use": "Long docs / multi-doc tasks",
+      "structure": "[Big data] → [instructions] → [question]"
+    },
+    {
+      "id": "compaction-external-memory",
+      "name": "Compaction + External Memory Pattern",
+      "category": "system",
+      "when_to_use": "Very long sessions, agents",
+      "structure": "Contract + (summary/compaction) + NOTES"
+    }
+  ],
+  "templates": [
+    {
+      "id": "system-prompt-template",
+      "name": "System Prompt Template",
+      "category": "system",
+      "when_to_use": "Creating new system prompts from scratch"
+    },
+    {
+      "id": "task-prompt-template",
+      "name": "Task Prompt Template",
+      "category": "system",
+      "when_to_use": "Creating one-shot task prompts"
+    },
+    {
+      "id": "chain-phase-template",
+      "name": "Chain Phase Template",
+      "category": "reasoning",
+      "when_to_use": "Building multi-phase prompt chains"
+    }
+  ],
+  "anti_patterns": [
+    {
+      "id": "instruction-ambiguity",
+      "name": "Instruction-following ambiguity",
+      "fix": "Add explicit hierarchy, positive patterns"
+    },
+    {
+      "id": "sycophancy",
+      "name": "Sycophancy vulnerability",
+      "fix": "Inject anti-sycophancy module"
+    },
+    {
+      "id": "missing-format",
+      "name": "Missing output format spec",
+      "fix": "Always specify format with example"
+    },
+    {
+      "id": "scope-creep",
+      "name": "Scope creep invitation",
+      "fix": "Define boundaries, include what NOT to do"
+    },
+    {
+      "id": "safety-bypass",
+      "name": "Safety bypass surface",
+      "fix": "Mark untrusted data boundaries explicitly"
+    },
+    {
+      "id": "negation-only",
+      "name": "Negation without alternative",
+      "fix": "Don't do X → Do Y instead + example"
+    },
+    {
+      "id": "over-wide-prohibitions",
+      "name": "Over-wide prohibitions",
+      "fix": "Do not infer → Infer only from provided text"
+    },
+    {
+      "id": "ai-isms",
+      "name": "AI-isms in output",
+      "fix": "Negative prompting: ban list + positive replacement"
+    }
+  ]
+}
