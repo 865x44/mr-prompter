@@ -1,12 +1,12 @@
 # Prompt Engineer Skill — Overview
 
-A production-ready prompt engineering skill. Provides seven modes (**Generate**, **Verify**, **Improve**, **Chain**, **Model Select**, **Diagnose**, **Extract**) backed by **31 techniques**, **13 failure patterns**, **58 ready-to-use prompts**, **6 model profiles**, and **10 research-backed citations**.
+A production-ready prompt engineering skill. Provides seven modes (**Generate**, **Verify**, **Improve**, **Chain**, **Model Select**, **Diagnose**, **Extract**) backed by **31 techniques**, **13 failure patterns**, **58 prompt Markdown files**, **6 model profiles**, and **12 research-backed flags**.
 
-## Stats (verified)
+## Stats
 
 - **31 techniques** across reasoning, system, creative, and analytic categories
-- **10 research-backed** with explicit citations (CoT: 13% → 41%, ToT: 4% → 74%, CoV: hallucinations ↓80%)
-- **58 ready-to-use prompts** (system, task, chain, template, meta)
+- **12 research-backed flags** in the knowledge base (entries with `research_backed=true`; not independently verified)
+- **58 prompt Markdown files** under prompts/ (standalone prompts, index, and archive)
 - **6 model profiles** with platform-specific rules (Claude, GPT-4.1, o3, Gemini, DeepSeek, Sonar)
 - **13 failure patterns** for session diagnostics (codes I01-T02)
 - **6 session archetypes** (Death by Corrections, Works Once Breaks Twice, Scope Creep Spiral, Format Jenga, The Yes-Man, Ghost Instructions)

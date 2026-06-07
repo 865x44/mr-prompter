@@ -1,6 +1,6 @@
 # Mr. Prompter
 
-> **Prompt engineering toolkit:** 7 specialized modes, 31 techniques, 58 ready-to-use prompts, security-first assessment, model selection framework.
+> **Prompt engineering toolkit:** 7 specialized modes, 31 techniques, 58 prompt Markdown files, security-first assessment, model selection framework.
 
 Write prompts. Audit them. Fix broken sessions. Extract reusable templates from conversations. Pick the right AI model. All in one skill.
 
@@ -160,9 +160,9 @@ prompt-engineer/
 
 | Category | Count | What's inside |
 |----------|-------|---------------|
-| Techniques (total) | 28 | CoT, ToT, CoV, Reflexion, etc. across 4 categories |
-| Research-backed (with citations) | 10 | Explicit citations from peer-reviewed papers |
-| Ready-to-use prompts | 58 | System, task, chain, template, meta categories |
+| Techniques (total) | 31 | CoT, ToT, CoV, Reflexion, etc. across 4 categories |
+| Research-backed (entries flagged `research_backed=true`) | 12 | Entries flagged in the knowledge base, not independently verified citations |
+| Prompt Markdown files | 58 | Standalone prompts, index, and archive under prompts/ |
 | Failure patterns (diagnostics) | 13 | Coded patterns (I01-T02) with root causes and patches |
 | Session archetypes | 6 | Common failure modes (Death by Corrections, Format Jenga, etc.) |
 | Model profiles | 6 | Full comparison matrix with do's and don'ts |
@@ -239,11 +239,11 @@ python scripts/prompt_engineer.py list --category reasoning
 - Added 7-section output template for consistent deliverables
 - Added onboarding section for first-time users
 - Merged Urbans model selection framework
-- Added session archetypes and 12 coded failure patterns
+- Added session archetypes and 13 coded failure patterns
 
 ### v1.0
 - Initial release: GENERATE, VERIFY, IMPROVE, CHAIN modes
-- 31 techniques, 13 failure patterns, 10 research-backed citations, 58 prompts, CLI tools
+- 31 techniques, 13 failure patterns, 12 research-backed flags, 58 prompt Markdown files, CLI tools
 
 ---
 

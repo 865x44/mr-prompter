@@ -8,8 +8,9 @@
     "failure_patterns": 13,
     "session_archetypes": 6,
     "extraction_patterns": 5,
+    "model_profiles": 6,
     "prompt_files": 58,
-    "research_backed": 10
+    "research_backed": 12
   },
   "categories": {
     "system": {

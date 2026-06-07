@@ -86,7 +86,7 @@ def cmd_search(args):
 
     if not results:
         print("No results found.")
-        return
+        sys.exit(1)
 
     print(f"{'Score':<6} {'Type':<12} {'ID':<30} {'Name':<40}")
     print("-" * 100)
@@ -125,11 +125,20 @@ def cmd_get(args):
                     print()
                     # Show relevant section from reference file
                     content = (ref_dir / ref_file).read_text(encoding="utf-8")
-                    # Find section by name
-                    pattern = re.compile(rf"^## .*?{re.escape(entry['name'])}.*?(?=^## |\Z)", re.MULTILINE | re.DOTALL | re.IGNORECASE)
-                    match = pattern.search(content)
-                    if match:
-                        print(match.group(0)[:3000])
+                    # Find exact header line containing the technique name
+                    header_pattern = re.compile(
+                        rf"^## [^\n]*{re.escape(entry['name'])}[^\n]*$",
+                        re.MULTILINE | re.IGNORECASE,
+                    )
+                    header_match = header_pattern.search(content)
+                    if header_match:
+                        start = header_match.start()
+                        next_section = re.search(r"^## ", content[start + 1 :], re.MULTILINE)
+                        if next_section:
+                            end = start + 1 + next_section.start()
+                        else:
+                            end = len(content)
+                        print(content[start:end][:3000])
                     else:
                         print(f"See references/{ref_file} for full details.")
                 else:
@@ -138,6 +147,7 @@ def cmd_get(args):
                 return
 
     print(f"Technique/pattern/template not found: {target_id}")
+    sys.exit(1)
 
 
 def cmd_list(args):
@@ -154,12 +164,16 @@ def cmd_list(args):
 
 
 def cmd_verify(args):
-    prompt_text = Path(args.prompt_file).read_text(encoding="utf-8") if args.prompt_file else ""
+    try:
+        prompt_text = Path(args.prompt_file).read_text(encoding="utf-8") if args.prompt_file else ""
+    except FileNotFoundError:
+        print(f"File not found: {args.prompt_file}")
+        sys.exit(1)
     if not prompt_text and args.prompt_text:
         prompt_text = args.prompt_text
     if not prompt_text:
         print("No prompt provided. Use --prompt-file or --prompt-text")
-        return
+        sys.exit(1)
 
     pl = prompt_text.lower()
     issues = []
