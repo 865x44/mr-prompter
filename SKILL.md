@@ -1,11 +1,11 @@
 ---
 name: prompt-engineer
-description: "Generate, verify, improve, chain, diagnose, and extract LLM prompts using 75+ research-backed techniques. Triggers on: 'generate prompt', 'write a prompt', 'create prompt', 'audit prompt', 'verify prompt', 'improve prompt', 'optimize prompt', 'prompt engineering', 'system prompt', 'prompt chain', 'chain of thought', 'tree of thought', 'anti-sycophancy', 'prompt injection defense', 'CoT', 'ToT', 'prompt audit', 'chain prompts', 'strategic chain', 'select model', 'which model for', 'analyze this session', 'what went wrong', 'проанализируй диалог', 'почему не слушался', 'extract prompt from', 'make this a prompt', 'turn this chat into'. Supports seven modes: GENERATE, VERIFY, IMPROVE, CHAIN, MODEL SELECT, DIAGNOSE, EXTRACT."
+description: "Generate, verify, improve, chain, diagnose, and extract LLM prompts using 31 techniques with 12 research-backed flags. Triggers on: 'generate prompt', 'write a prompt', 'create prompt', 'audit prompt', 'verify prompt', 'improve prompt', 'optimize prompt', 'prompt engineering', 'system prompt', 'prompt chain', 'chain of thought', 'tree of thought', 'anti-sycophancy', 'prompt injection defense', 'CoT', 'ToT', 'prompt audit', 'chain prompts', 'strategic chain', 'select model', 'which model for', 'analyze this session', 'what went wrong', 'проанализируй диалог', 'почему не слушался', 'extract prompt from', 'make this a prompt', 'turn this chat into'. Supports seven modes: GENERATE, VERIFY, IMPROVE, CHAIN, MODEL SELECT, DIAGNOSE, EXTRACT."
 ---
 
 # Prompt Engineer
 
-Craft production-quality prompts, audit existing ones, analyze failed sessions, and select optimal models. Six modes: **Generate**, **Verify**, **Improve**, **Chain**, **Model Select**, **Diagnose**.
+Craft production-quality prompts, audit existing ones, analyze failed sessions, and select optimal models. Seven modes: **Generate**, **Verify**, **Improve**, **Chain**, **Model Select**, **Diagnose**, **Extract**.
 
 ## Knowledge Base
 
@@ -522,7 +522,7 @@ When user asks "which model for [task]?" or "best AI for [objective]?":
 If the user seems confused about what the skill does or how to use it, explain the core pattern:
 
 ### What This Skill Does
-This skill is a **prompt engineering toolkit** — like an IDE for prompts. It helps with 6 distinct tasks:
+This skill is a **prompt engineering toolkit** — like an IDE for prompts. It helps with 7 distinct tasks:
 
 | I want to... | Use mode | What I provide | What I get |
 |---|---|---|---|
@@ -532,6 +532,7 @@ This skill is a **prompt engineering toolkit** — like an IDE for prompts. It h
 | Build a multi-step analysis | **CHAIN** | Topic + goals | Series of connected prompts (Phase 1→2→3) |
 | Pick the best AI model | **MODEL SELECT** | Description of task | Model recommendation + rationale |
 | **Figure out why a session failed** | **DIAGNOSE** | **Conversation log** | Exact failure points + concrete patches |
+| **Save a good session as reusable prompt** | **EXTRACT** | **Successful chat log** | Standalone reusable prompt template |
 
 ### Core Pattern (How Most People Use It)
 ```
