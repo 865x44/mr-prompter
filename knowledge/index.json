@@ -522,5 +522,46 @@
       "name": "AI-isms in output",
       "fix": "Negative prompting: ban list + positive replacement"
     }
+  ],
+  "assemble_model_notes": [
+    {
+      "aliases": ["claude", "claude-4"],
+      "notes": [
+        "Use XML tags for structure",
+        "Place documents at TOP, queries at BOTTOM",
+        "Enable extended thinking for complex tasks"
+      ]
+    },
+    {
+      "aliases": ["gpt-4o", "gpt-4"],
+      "notes": [
+        "Use Markdown sections + few-shot examples",
+        "Clear, structured instructions work best"
+      ]
+    },
+    {
+      "aliases": ["o1", "o3"],
+      "notes": [
+        "**SHORT prompts only**",
+        "**NO explicit CoT instructions** — built-in reasoning",
+        "Add 'Formatting re-enabled' if needed"
+      ]
+    },
+    {
+      "aliases": ["gemini", "gemini-3"],
+      "notes": [
+        "Short, direct instructions",
+        "Place data BEFORE instructions for long context",
+        "Avoid negative constraints, use positive framing"
+      ]
+    },
+    {
+      "aliases": ["deepseek-r1", "deepseek"],
+      "notes": [
+        "**NO system message** — everything in user prompt",
+        "**NO few-shot examples** — degrades performance",
+        "Temperature 0.5-0.7, minimal prompt length"
+      ]
+    }
   ]
 }

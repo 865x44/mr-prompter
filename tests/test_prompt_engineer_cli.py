@@ -148,6 +148,34 @@ class TestAssemble(unittest.TestCase):
         self.assertEqual(result.returncode, 0)
         self.assertIn("Prompt Assembly Scaffold", result.stdout)
 
+    def test_assemble_model_notes_data_driven(self):
+        """Model notes come from index.json assemble_model_notes; one probe per group."""
+        expected = {
+            "claude": "Use XML tags for structure",
+            "gpt-4o": "Use Markdown sections + few-shot examples",
+            "o1": "**NO explicit CoT instructions** — built-in reasoning",
+            "gemini": "Place data BEFORE instructions for long context",
+            "deepseek": "**NO system message** — everything in user prompt",
+        }
+        for model, note in expected.items():
+            with self.subTest(model=model):
+                result = subprocess.run(
+                    CLI + ["assemble", "--model", model, "--category", "system"],
+                    capture_output=True,
+                    text=True,
+                )
+                self.assertEqual(result.returncode, 0)
+                self.assertIn(f"- {note}", result.stdout)
+
+    def test_assemble_unknown_model_no_notes(self):
+        result = subprocess.run(
+            CLI + ["assemble", "--model", "nonexistent-model", "--category", "system"],
+            capture_output=True,
+            text=True,
+        )
+        self.assertEqual(result.returncode, 0)
+        self.assertIn("Model-Specific Notes:", result.stdout)
+
 
 if __name__ == "__main__":
     unittest.main()

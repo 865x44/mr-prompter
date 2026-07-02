@@ -308,25 +308,15 @@ def cmd_assemble(args):
             print(f"- **Gain:** {t['gain_reported']}")
 
     print(f"\n## Model-Specific Notes:")
-    if model in ["claude", "claude-4"]:
-        print("- Use XML tags for structure")
-        print("- Place documents at TOP, queries at BOTTOM")
-        print("- Enable extended thinking for complex tasks")
-    elif model in ["gpt-4o", "gpt-4"]:
-        print("- Use Markdown sections + few-shot examples")
-        print("- Clear, structured instructions work best")
-    elif model in ["o1", "o3"]:
-        print("- **SHORT prompts only**")
-        print("- **NO explicit CoT instructions** — built-in reasoning")
-        print("- Add 'Formatting re-enabled' if needed")
-    elif model in ["gemini", "gemini-3"]:
-        print("- Short, direct instructions")
-        print("- Place data BEFORE instructions for long context")
-        print("- Avoid negative constraints, use positive framing")
-    elif model in ["deepseek-r1", "deepseek"]:
-        print("- **NO system message** — everything in user prompt")
-        print("- **NO few-shot examples** — degrades performance")
-        print("- Temperature 0.5-0.7, minimal prompt length")
+    note_groups = index.get("assemble_model_notes")
+    if not note_groups:
+        print("ERROR: knowledge/index.json is missing 'assemble_model_notes'", file=sys.stderr)
+        sys.exit(1)
+    for group in note_groups:
+        if model in [a.lower() for a in group.get("aliases", [])]:
+            for note in group.get("notes", []):
+                print(f"- {note}")
+            break
 
 
 def main():

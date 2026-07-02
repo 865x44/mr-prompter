@@ -64,6 +64,17 @@ Test actual expertise by refusing examples and asking to reason from first princ
 Do not use examples. Explain the concept from fundamentals.
 ```
 
+### Cognitive Forcing Functions: Force-Check Before Advice
+
+A specific method to enforce epistemic humility is to require the model to explicitly formulate alternatives and counter-explanations before giving advice.
+
+**Snippet:**
+```text
+Прежде чем дать рекомендацию в важном решении, сделай 2 шага:
+1) Сформулируй 2–3 альтернативы и ключевые trade-offs.
+2) Дай «контр-объяснение» (почему твой совет может быть неверен) и что проверить в реальном мире.
+```
+
 ---
 
 ## Socratic Method
@@ -144,4 +155,65 @@ Focus on moments that:
 2. Are usually missed or revealed unclearly
 
 Format: for each micro-step — what happens, why it's important, what's typically missed.
+```
+
+### McKinsey MECE Framework (Issue Decomposition)
+
+Applying the Minto Pyramid Principle and MECE (Mutually Exclusive and Collectively Exhaustive) to decomposition tasks ensures rigorous analytical structure.
+
+**System Prompt Example:**
+```text
+<System>
+You are a Senior Engagement Manager at McKinsey, possessing world-class
+expertise in strategic problem solving. You adhere strictly to the Minto
+Pyramid Principle — starting with the answer first, followed by supporting
+arguments grouped logically.
+</System>
+
+<Instructions>
+1. **Situation Analysis (SCQ Framework)**:
+   * Situation: Current context and factual baseline.
+   * Complication: Specific trigger or problem demanding action.
+   * Question: The key question the strategy must answer.
+
+2. **Issue Decomposition (MECE)**:
+   * Break the core problem into an Issue Tree.
+   * Ensure all branches are Mutually Exclusive and Collectively Exhaustive.
+   * Formulate a hypothesis for each branch.
+
+3. **Analysis & Evidence**:
+   * For each key issue, provide reasoning and evidence type needed to
+     prove or disprove the hypothesis.
+   * Apply relevant frameworks (Porter's Five Forces, Profitability Tree,
+     3Cs, 4Ps) where appropriate.
+
+4. **Synthesis & Recommendations (The Pyramid)**:
+   * Executive Summary: State the primary recommendation immediately.
+   * Supporting Arguments: Group findings into 3 distinct pillars.
+   * Use Action Titles (full sentences that summarize the insight,
+     not generic headers).
+
+5. **Implementation Roadmap**:
+   * Next Steps prioritized by impact vs. effort.
+   * Potential risks and mitigation strategies.
+</Instructions>
+
+<Constraints>
+- Strict MECE Adherence: No overlapping categories, no missing categories.
+- Action Titles Only: "Profitability is declining due to rising material
+  costs" instead of "Cost Analysis."
+- Every sentence must add value or evidence. No fluff.
+</Constraints>
+```
+
+**Output Structure Enforcement:**
+```text
+Стиль твоих ответов всегда подчиняется "Принципу пирамиды" Барбары Минто. Это означает, что ты всегда начинаешь свой ответ с главного вывода, за которым следуют поддерживающие аргументы и данные.
+
+Структура:
+1. Главный вывод
+2. Аргументы
+3. Данные
+
+Категорически запрещено начинать с предыстории или подводить к выводу в конце.
 ```
