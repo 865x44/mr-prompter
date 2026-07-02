@@ -1,6 +1,6 @@
 # Mr. Prompter
 
-> **Prompt engineering toolkit:** 7 specialized modes, 31 techniques, 58 prompt Markdown files, security-first assessment, model selection framework.
+> **Prompt engineering toolkit:** 7 specialized modes, 39 techniques, 58 prompt Markdown files, security-first assessment, model selection framework.
 
 Write prompts. Audit them. Fix broken sessions. Extract reusable templates from conversations. Pick the right AI model. All in one skill.
 
@@ -140,7 +140,7 @@ prompt-engineer/
 ├── SKILL.md              # Core skill definition (entry point)
 ├── README.md             # This file
 ├── knowledge/
-│   └── index.json        # Searchable index of 31 techniques
+│   └── index.json        # Searchable index of 39 techniques
 ├── references/           # Knowledge base (loaded on demand)
 │   ├── context.md        # Overview, platform rules, model quick-ref
 │   ├── meta.md           # Principles, anti-patterns, emergency fixes
@@ -160,8 +160,8 @@ prompt-engineer/
 
 | Category | Count | What's inside |
 |----------|-------|---------------|
-| Techniques (total) | 31 | CoT, ToT, CoV, Reflexion, etc. across 4 categories |
-| Research-backed (entries flagged `research_backed=true`) | 12 | Entries flagged in the knowledge base, not independently verified citations |
+| Techniques (total) | 39 | CoT, ToT, CoV, Reflexion, etc. across 10 categories |
+| Research-backed (entries flagged `research_backed=true`) | 21 | Entries flagged in the knowledge base, not independently verified citations |
 | Prompt Markdown files | 58 | Standalone prompts, index, and archive under prompts/ |
 | Failure patterns (diagnostics) | 13 | Coded patterns (I01-T02) with root causes and patches |
 | Session archetypes | 6 | Common failure modes (Death by Corrections, Format Jenga, etc.) |
@@ -243,7 +243,7 @@ python scripts/prompt_engineer.py list --category reasoning
 
 ### v1.0
 - Initial release: GENERATE, VERIFY, IMPROVE, CHAIN modes
-- 31 techniques, 13 failure patterns, 12 research-backed flags, 58 prompt Markdown files, CLI tools
+- 39 techniques, 13 failure patterns, 21 research-backed flags, 58 prompt Markdown files, CLI tools
 
 ---
 

@@ -1,26 +1,155 @@
 # Reasoning Techniques
 
-## Chain of Thought (CoT)
+## Native Reasoning Controls
 
-Request model to perform multi-step reasoning. Improves complex reasoning.
+Use exposed reasoning effort, thinking mode, thinking budget, or adaptive thinking controls instead of asking current reasoning models to reveal step-by-step reasoning.
 
-**When to Apply**: Math, logic, multi-factor decisions. **Do NOT use** with reasoning models (o1/o3, DeepSeek R1, Claude extended thinking).
+### When to Use
 
-**Snippet**:
+Use for complex analysis, code review, planning, math, multi-step tool use, and ambiguous decisions on models with native reasoning controls.
+
+### Avoid
+
+Avoid on models/surfaces with no exposed reasoning controls; use concise plan-first prompting instead.
+
+### Models
+
+- OpenAI reasoning/GPT-5 series APIs with reasoning effort
+- Claude thinking/effort surfaces where exposed
+- Gemini thinking
+- DeepSeek V4 thinking mode
+- Qwen Thinking where configured
+
+### Avoid For
+
+- Visible chain-of-thought demands
+- Low-latency bulk extraction
+- Consumer UI surfaces where controls are unavailable
+
+### Surface Notes
+
+API can expose parameters; UI may expose a mode toggle or no control; local Qwen/DeepSeek behavior depends on runner template.
+
+### Failure Modes
+
+- User asks for hidden chain-of-thought.
+- Effort set high for cheap classification and cost explodes.
+- Reasoning control assumed available in UI when only API supports it.
+
+### Eval Prompt
+
+Compare three variants on 20 reasoning tasks: visible CoT prompt, reasoning-effort parameter with concise rationale, and no reasoning control. Track accuracy, latency, and output-token count.
+
+### Sources
+
+- OpenAI reasoning and prompt engineering docs, 2026-07-02 verification
+- Anthropic model capability/tool docs, 2026-07-02 verification
+- Google Gemini thinking docs, Prompt 2 verification
+- DeepSeek V4/R1 docs, Prompt 2 verification
+
+Last verified: 2026-07-02
+
+---
+
+## Concise Rationale with Hidden Reasoning
+
+Ask the model to reason internally and output only the conclusion plus a short rationale, assumptions, and checks.
+
+### When to Use
+
+Use when the user needs trustable reasoning signals without verbose private reasoning traces.
+
+### Avoid
+
+Avoid when the task requires a full proof, derivation, audit trail, or educational step-by-step solution.
+
+### Models
+
+Most current frontier models; especially native reasoning models.
+
+### Avoid For
+
+- Legacy small models where explicit decomposition materially improves accuracy
+- Formal proofs needing full derivation
+
+### Surface Notes
+
+Works in chat UI and API; do not request private chain-of-thought; use explicit sections such as Answer / Rationale / Assumptions / Checks.
+
+### Failure Modes
+
+- Rationale becomes post-hoc rationalization.
+- Model hides uncertainty behind polished wording.
+- Too short for high-risk decisions.
+
+### Eval Prompt
+
+Ask for answers to ambiguous decision cases; compare rationale-only outputs against full CoT requests for correctness, calibration, and leakage of unsupported claims.
+
+### Sources
+
+- OpenAI reasoning and prompt engineering docs, 2026-07-02 verification
+- Prompt 2 model-behavior matrix
+
+Last verified: 2026-07-02
+
+---
+
+## Legacy Chain-of-Thought Fallback
+
+Use explicit stepwise reasoning only for older, weaker, or small/local models where decomposition demonstrably improves task performance.
+
+### When to Use
+
+Use for math, logic, or multi-step tasks on models without native reasoning controls, especially when an eval shows improvement.
+
+### Avoid
+
+Avoid as a universal instruction; avoid with native reasoning models unless asking for an educational explanation rather than hidden reasoning.
+
+### Models
+
+- Small/local instruct models
+- Older GPT-style non-reasoning models
+- Unverified models after eval
+
+### Avoid For
+
+- OpenAI reasoning models
+- Claude extended/adaptive thinking surfaces
+- DeepSeek/Qwen thinking modes
+- High-volume low-latency calls
+
+### Surface Notes
+
+In UI, prefer "briefly explain" or "show the derivation" only when user-facing explanation is the product. In API, prefer reasoning controls where available.
+
+### Research
+
+- Wei et al. 2022 Chain-of-Thought Prompting
+- The Prompt Report, 2024
+- OpenAI reasoning-model guidance, 2026-07-02 verification
+
+Evidence grade: A for older CoT literature; B/C for modern model fit.
+
+### Failure Modes
+
+- Token bloat.
+- Plausible but wrong reasoning.
+- Private reasoning request on surfaces that should not expose it.
+
+### Eval Prompt
+
+Run exact same reasoning set with no scaffold, brief plan-first, and full CoT; keep only if accuracy gain exceeds token/latency cost.
+
+### Snippet
+
 ```text
 For complex tasks:
 - first create a solution plan (briefly),
 - then give the final answer.
 If speed is needed, think "silently" and output only the result with brief justification.
 ```
-
-**Research**: GSM8K: 13% -> 41% (zero-shot). CoT can be plausible but deceptive (Anthropic research).
-
-**Model Notes**:
-- Claude: Use `<thinking>` tags or extended thinking mode
-- GPT-4o: "Think step by step" works well
-- o1/o3, DeepSeek R1: **DO NOT use** — built-in reasoning
-- Gemini: Supported; for lower latency use thinking level LOW
 
 ---
 
@@ -39,62 +168,6 @@ at any point then they leave. The question is...
 ```
 
 **Research**: Game of 24 — **74% vs 4%** (CoT baseline) (Yao et al., 2023).
-
----
-
-## Chain of Verification (CoV)
-
-Fact-checking technique: model drafts answer -> plans verification questions -> answers them independently -> revises original.
-
-**When to Apply**: Factual accuracy critical, hallucination-prone domains.
-
-**Snippet**:
-```text
-STEP 1 — Draft Response: Generate your initial answer.
-
-STEP 2 — Verification Planning: Generate 3-5 specific verification questions
-that would confirm or deny the key factual claims.
-
-STEP 3 — Independent Verification: Answer each verification question
-independently. Do NOT refer back to your draft answer.
-
-STEP 4 — Final Verified Response: Compare verification answers against your
-draft. Remove or correct any claims that were contradicted.
-```
-
-**Research**: Dhuliawala et al. (2023), Meta AI: **>2x precision**, hallucinated entities slashed from 2.95 to 0.68 per response.
-
----
-
-## Reflexion
-
-Self-reflection: model explicitly reviews its own reasoning, detects mistakes, and corrects before final output.
-
-**Snippet**:
-```text
-Reason through the query inside <thinking> tags, then provide final response
-inside <output> tags. If you detect a mistake at any point, correct yourself
-inside <reflection> tags.
-```
-
-**Research**: Shinn et al. (2023, NeurIPS): general self-reflection significantly improves performance across 9 LLMs (p < 0.001).
-
----
-
-## Metacognitive Protocol
-
-Five-stage explicit reasoning: comprehend -> preliminary judgment -> critical reflection -> final judgment -> confidence assessment.
-
-**Snippet**:
-```text
-1. COMPREHEND: Read and interpret. State your understanding explicitly.
-2. PRELIMINARY JUDGMENT: First-pass answer.
-3. CRITICAL REFLECTION: Could I be interpreting differently? What assumptions? Biases? Alternatives?
-4. FINAL JUDGMENT: Synthesize into revised, well-justified answer.
-5. CONFIDENCE ASSESSMENT: Rate 0-100% and explain factors.
-```
-
-**Research**: Wang et al. (2023), NAACL 2024: peer-reviewed across **10 NLU datasets**, "notably surpassed other prompting baselines."
 
 ---
 
@@ -130,108 +203,86 @@ Simulate multiple LLM instances debating to converge on better answers.
 
 ---
 
-## Reasoning Upgrade Insert
+## Source-Grounded Verification
 
-Injection that activates "thinking" mode in weak prompts:
-```text
-For complex tasks:
-- first create a plan (briefly),
-- then give the final answer.
-If speed is needed, think "silently" and output only result + brief justification.
-```
+Verify factual claims against external or provided sources, not merely against the model's own draft.
 
-**Avoid with reasoning models** (o1/o3, DeepSeek R1) — they handle reasoning internally.
+### When to Use
 
----
+Use for factual research, legal/medical/financial-adjacent summaries, model roster updates, citations, and KB maintenance.
 
-## Forced Domain Shift
+### Avoid
 
-**Definition**
-Block access to high-probability tokens by restricting the model to an unrelated domain, forcing novel attention patterns and creative output.
+Avoid when no source access exists and the task only needs internal consistency; in that case label uncertainty explicitly.
 
-**When to Apply**
-- Creativity tasks where standard output is too generic
-- Lateral thinking exercises
-- Breaking AI-isms and clichés
+### Models
 
-**Research**
-From Yahor Kamarou's research on transformer creativity. Operationalizes SCAMPER, De Bono's lateral thinking, and Koestler's bisociation.
+Any model with web/file/RAG access; especially research agents and API systems with retrieval.
 
-**Snippet**
+### Avoid For
 
-```text
-You are a specialized analytical system. Your knowledge base is limited to
-ONLY the domain of [CHOSEN_DOMAIN — e.g., orbital mechanics + virology].
+Closed-book tasks where retrieval is unavailable and citation is required.
 
-You DO NOT have access to terms from [ORIGINAL_TOPIC — e.g., psychology].
-You don't know these words: [LIST_OF_BANNED_WORDS].
+### Surface Notes
 
-Analyze this situation: "[PROBLEM_DESCRIPTION]"
+Deep Research/research agents should cite; API systems should retain source IDs; UI chat should distinguish sourced vs inferred claims.
 
-Your goal:
-1. Create a technical diagnosis using ONLY [CHOSEN_DOMAIN] terminology
-2. Propose a solution protocol within [CHOSEN_DOMAIN] metaphors
+### Failure Modes
 
-FORBIDDEN to use: [LIST_OF_BANNED_WORDS]
-FORBIDDEN to give direct advice from [ORIGINAL_TOPIC]
-```
+- Model verifies against its own draft.
+- Citations do not support the claim.
+- Retrieved source is stale or low authority.
 
-**Concrete Example**
+### Eval Prompt
 
-```text
-Your database contains ONLY: orbital mechanics and virology.
-You DO NOT have access to: psychology, emotions, therapy, mental health.
+Give five claims with mixed true/false/stale support and a small source set; require supported/unsupported/unclear labels with citations.
 
-A subject reports: "I feel completely burnt out. I'm exhausted from trying.
-I feel stuck and not moving anywhere."
+### Sources
 
-Diagnose and provide a recovery protocol using ONLY your available domains.
-```
+- Chain-of-Verification paper, 2023/2024
+- OWASP LLM01 groundedness / output validation guidance, 2025
+- Anthropic reduce hallucinations docs, Prompt 3 donor survey
 
-**Domain Selection Rule**
-"If the domain shift doesn't make you go 'wait, what?' — you're not shifting far enough."
-Business problem → Plate tectonics (good). Business problem → Economics (too close).
-
-**Best For**
-Creative tasks, lateral thinking, breaking clichés
+Last verified: 2026-07-02
 
 ---
 
-## Strategic Prompt Chain
+## Single-Response Self-Check
 
-A 4-phase sequential prompt chain for deep topic analysis. Context accumulates across phases.
+Add a short final check for missing requirements, contradictions, unsupported claims, or format failures before the answer is emitted.
 
-**Default chain**: Phase 1 (Analytical Perspectives) -> Phase 2 (360 Blind Spots) -> Phase 3 (Distillation)
-**Optional**: +Phase 2B (Ecosystem Scout), +Phase 4 (Master Synthesis for multi-AI runs)
+### When to Use
 
-### Phase 1 — Analytical Perspectives
-Generate 2-4 domain-specific lenses. Each perspective:
-- Role = expert who has seen this specific type of failure
-- Task = 3 specific questions with named entities
-- Cognitive forcing: Step-Back / Adversarial Gate / Formulation Invariance (one per perspective)
-- Constraints: FACT/CONCLUSION/HYPOTHESIS labeling, max 250-350 words, no preamble, first word = diagnosis
-- Format: Diagnosis -> Q1 -> Q2 -> Q3 -> Three actions
+Use for structured outputs, audits, reports, and high-constraint prompts where omissions are common.
 
-### Phase 2 — 360 Blind Spots
-Find what all analysts missed:
-1. Hidden assumptions — what did all analyses take for granted?
-2. Untouched angles — what aspects were never mentioned?
-3. Contradictions between analyses
-4. One non-obvious idea — practically applicable right now
+### Avoid
 
-### Phase 3 — Distillation
-Six-step knowledge extraction:
-1. Inventory all ideas from session
-2. Thematic map
-3. Contradictions (don't resolve — describe)
-4. Detailed action plan with horizons (now / this week / later)
-5. Open questions
-6. Pre-mortem (3 failure reasons visible now)
+Avoid for very short answers or ultra-low-latency tasks.
 
-### Phase 4 — Master Synthesis (multi-AI runs)
-Five-step synthesis of multiple AI distillation documents:
-1. Consensus map (ideas in 2+ docs = high confidence)
-2. Unique findings (only in one doc — often valuable)
-3. Contradictions between AIs
-4. AI source evaluation
-5. Master document (structured like Phase 3)
+### Models
+
+General.
+
+### Avoid For
+
+Native reasoning models when implemented as verbose visible reflection; use concise checklist instead.
+
+### Surface Notes
+
+In API, this can be hidden in developer prompt; in UI, ask for a "final compliance check" only when useful to the user.
+
+### Failure Modes
+
+- Checklist becomes ceremonial and misses real errors.
+- Adds boilerplate to user-facing output.
+
+### Eval Prompt
+
+Use 10 prompts with hidden format traps; compare omission rate with/without a final compliance checklist.
+
+### Sources
+
+- Reflexion paper lineage
+- Existing KB diagnostic framework
+
+Last verified: 2026-07-02

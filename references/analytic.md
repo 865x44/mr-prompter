@@ -217,3 +217,20 @@ arguments grouped logically.
 
 Категорически запрещено начинать с предыстории или подводить к выводу в конце.
 ```
+
+## Metacognitive Protocol
+
+Five-stage explicit reasoning: comprehend -> preliminary judgment -> critical reflection -> final judgment -> confidence assessment.
+
+**Snippet**:
+```text
+1. COMPREHEND: Read and interpret. State your understanding explicitly.
+2. PRELIMINARY JUDGMENT: First-pass answer.
+3. CRITICAL REFLECTION: Could I be interpreting differently? What assumptions? Biases? Alternatives?
+4. FINAL JUDGMENT: Synthesize into revised, well-justified answer.
+5. CONFIDENCE ASSESSMENT: Rate 0-100% and explain factors.
+```
+
+**Research**: Wang et al. (2023), NAACL 2024: peer-reviewed across **10 NLU datasets**, "notably surpassed other prompting baselines."
+
+---

@@ -1,6 +1,6 @@
 ---
 name: prompt-engineer
-description: "Generate, verify, improve, chain, diagnose, and extract LLM prompts using 31 techniques with 12 research-backed flags. Triggers on: 'generate prompt', 'write a prompt', 'create prompt', 'audit prompt', 'verify prompt', 'improve prompt', 'optimize prompt', 'prompt engineering', 'system prompt', 'prompt chain', 'chain of thought', 'tree of thought', 'anti-sycophancy', 'prompt injection defense', 'CoT', 'ToT', 'prompt audit', 'chain prompts', 'strategic chain', 'select model', 'which model for', 'analyze this session', 'what went wrong', 'проанализируй диалог', 'почему не слушался', 'extract prompt from', 'make this a prompt', 'turn this chat into'. Supports seven modes: GENERATE, VERIFY, IMPROVE, CHAIN, MODEL SELECT, DIAGNOSE, EXTRACT."
+description: "Generate, verify, improve, chain, diagnose, and extract LLM prompts using 39 techniques with 21 research-backed flags. Triggers on: 'generate prompt', 'write a prompt', 'create prompt', 'audit prompt', 'verify prompt', 'improve prompt', 'optimize prompt', 'prompt engineering', 'system prompt', 'prompt chain', 'chain of thought', 'tree of thought', 'anti-sycophancy', 'prompt injection defense', 'CoT', 'ToT', 'prompt audit', 'chain prompts', 'strategic chain', 'select model', 'which model for', 'analyze this session', 'what went wrong', 'проанализируй диалог', 'почему не слушался', 'extract prompt from', 'make this a prompt', 'turn this chat into'. Supports seven modes: GENERATE, VERIFY, IMPROVE, CHAIN, MODEL SELECT, DIAGNOSE, EXTRACT."
 ---
 
 # Prompt Engineer
@@ -17,6 +17,11 @@ references/
   reasoning.md    # CoT, ToT, CoV, Reflexion, Metacognition, Strategic Chain
   analytic.md     # Anti-sycophancy, epistemic humility, Socratic, MECE
   creative.md     # Negative prompting, archetypes, entropy, sampling, Neurotexts templates
+  security.md     # Untrusted data boundaries, injection defense architecture
+  context-engineering.md  # Progressive disclosure, long-context, retrieval, compression
+  agents.md       # Strategic chain, multi-agent debate, tool contracts, agent loops
+  memory.md       # Context anchoring, memory/state hygiene
+  evals.md        # Eval gauntlet, prompt-as-code fixtures
   cases.md        # Documented failure modes with root cause and fix
   models.md       # Model selection framework, decision tree, comparison matrix
   diagnose.md     # Session diagnostics: analyze conversation logs, find failure points
@@ -42,7 +47,7 @@ Before producing any output, run a quick security scan:
 Flag critical security issues immediately. If the user is about to paste untrusted content into a prompt without boundaries — stop and warn.
 
 ### Rule 2: Model-Aware Output
-Always recommend the optimal model for the task. Read `references/models.md` for the decision tree. Default to Claude 4 Sonnet for general prompt engineering tasks.
+Always recommend the optimal model for the task. Read `references/models.md` for the surface-aware model matrix.
 
 ### Rule 3: Conversational vs Product-Focused Assessment
 Determine which mode the user needs:

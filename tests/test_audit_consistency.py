@@ -74,6 +74,50 @@ class TestAuditConsistency(unittest.TestCase):
             self.assertNotEqual(result.returncode, 0)
             self.assertIn("README.md table claims 999 session_archetypes", result.stdout)
 
+    def test_audit_fails_research_backed_strict(self):
+        """A technique with research_backed=true but evidence_grade!='A' must fail."""
+        import json
+        index_path = REPO_ROOT / "knowledge" / "index.json"
+        original = json.loads(index_path.read_text(encoding="utf-8"))
+        corrupted = dict(original)
+        # Append a bad technique
+        corrupted["techniques"] = list(original.get("techniques", [])) + [{
+            "id": "bad-tech-1", "category": "system", "research_backed": True, "evidence_grade": "C"
+        }]
+        with tempfile.NamedTemporaryFile(
+            mode="w", suffix=".json", delete=False, dir=index_path.parent
+        ) as f:
+            json.dump(corrupted, f)
+            tmp_path = f.name
+        try:
+            result = self.run_audit(extra_env={"AUDIT_INDEX_OVERRIDE": Path(tmp_path).name})
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn("has research_backed=true but evidence_grade=C", result.stdout)
+        finally:
+            Path(tmp_path).unlink()
+
+    def test_audit_fails_current_requires_eval(self):
+        """A technique with status='current' but no eval_prompt must fail."""
+        import json
+        index_path = REPO_ROOT / "knowledge" / "index.json"
+        original = json.loads(index_path.read_text(encoding="utf-8"))
+        corrupted = dict(original)
+        # Append a bad technique
+        corrupted["techniques"] = list(original.get("techniques", [])) + [{
+            "id": "bad-tech-2", "category": "system", "status": "current", "eval_prompt": None
+        }]
+        with tempfile.NamedTemporaryFile(
+            mode="w", suffix=".json", delete=False, dir=index_path.parent
+        ) as f:
+            json.dump(corrupted, f)
+            tmp_path = f.name
+        try:
+            result = self.run_audit(extra_env={"AUDIT_INDEX_OVERRIDE": Path(tmp_path).name})
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn("has status=current but no eval_prompt", result.stdout)
+        finally:
+            Path(tmp_path).unlink()
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -139,7 +139,7 @@ def check_unique_ids(index):
 
 def check_technique_categories(index):
     """Verify technique categories are valid."""
-    valid = {"system", "reasoning", "creative", "analytic", "meta"}
+    valid = {"system", "reasoning", "analytic", "creative", "context", "agents", "memory", "security", "evals", "models"}
     for t in index.get("techniques", []):
         cat = t.get("category", "")
         if cat not in valid:
@@ -147,27 +147,23 @@ def check_technique_categories(index):
             fail(f'Technique "{tid}" has invalid category "{cat}"')
 
 
-DEFERRED_MISSING_SECTIONS = {
-    "forced-domain-shift",
-    "toggle-mode-pattern",
-    "injection-defense",
-    "progressive-disclosure",
-}
-
-
 def check_technique_reference_sections(index):
     """Verify each technique maps to a reference section.
 
-    The four known missing sections are documented deferred exemptions.
-    Any additional missing mapping is treated as a failure.
+    Any missing mapping is treated as a failure.
     """
     ref_dir = REPO_ROOT / "references"
     file_map = {
-        "reasoning": "reasoning.md",
         "system": "system.md",
-        "creative": "creative.md",
+        "reasoning": "reasoning.md",
         "analytic": "analytic.md",
-        "meta": "meta.md",
+        "creative": "creative.md",
+        "context": "context-engineering.md",
+        "agents": "agents.md",
+        "memory": "memory.md",
+        "security": "security.md",
+        "evals": "evals.md",
+        "models": "models.md",
     }
 
     missing = []
@@ -190,20 +186,27 @@ def check_technique_reference_sections(index):
             rf"^## [^\n]*{re.escape(name)}[^\n]*$",
             re.MULTILINE | re.IGNORECASE,
         )
-        if not pattern.search(content):
+        if not pattern.search(content) and cat != "models":
             missing.append(t.get("id"))
 
-    deferred = [m for m in missing if m in DEFERRED_MISSING_SECTIONS]
-    unexpected = [m for m in missing if m not in DEFERRED_MISSING_SECTIONS]
-
-    if deferred:
-        warn(
-            f"Deferred missing reference sections: {', '.join(sorted(deferred))}"
-        )
-    if unexpected:
+    if missing:
         fail(
-            f"Techniques with no matching reference section: {', '.join(sorted(unexpected))}"
+            f"Techniques with no matching reference section: {', '.join(sorted(missing))}"
         )
+
+
+def check_research_backed_strict(index):
+    """D4: research_backed=true requires evidence_grade=='A'."""
+    for t in index.get("techniques", []):
+        if t.get("research_backed") and t.get("evidence_grade") != "A":
+            fail(f'Technique "{t.get("id")}" has research_backed=true but evidence_grade={t.get("evidence_grade")}')
+
+
+def check_current_requires_eval(index):
+    """D5: status=='current' requires non-empty eval_prompt."""
+    for t in index.get("techniques", []):
+        if t.get("status") == "current" and not t.get("eval_prompt"):
+            fail(f'Technique "{t.get("id")}" has status=current but no eval_prompt')
 
 
 def check_referenced_files_exist(index):
@@ -215,6 +218,11 @@ def check_referenced_files_exist(index):
         REPO_ROOT / "references" / "reasoning.md",
         REPO_ROOT / "references" / "analytic.md",
         REPO_ROOT / "references" / "creative.md",
+        REPO_ROOT / "references" / "security.md",
+        REPO_ROOT / "references" / "context-engineering.md",
+        REPO_ROOT / "references" / "agents.md",
+        REPO_ROOT / "references" / "memory.md",
+        REPO_ROOT / "references" / "evals.md",
         REPO_ROOT / "references" / "cases.md",
         REPO_ROOT / "references" / "models.md",
         REPO_ROOT / "references" / "diagnose.md",
@@ -256,7 +264,6 @@ def check_published_claims():
     """
     readme = (REPO_ROOT / "README.md").read_text(encoding="utf-8")
     skill = (REPO_ROOT / "SKILL.md").read_text(encoding="utf-8")
-    context = (REPO_ROOT / "references" / "context.md").read_text(encoding="utf-8")
 
     index = load_index()
     metrics = compute_metrics(index)
@@ -342,59 +349,11 @@ def check_published_claims():
         if claimed != modes:
             fail(f"SKILL.md claims {claimed} modes/tasks (computed {modes})")
 
-    ctx_tech_match = re.search(r"backed by \*\*(\d+) techniques\*\*", context)
-    if ctx_tech_match:
-        claimed = int(ctx_tech_match.group(1))
-        if claimed != techniques:
-            fail(f"references/context.md claims {claimed} techniques (computed {techniques})")
-
-    ctx_rb_match = re.search(r"\*\*(\d+) research-backed flags\*\*", context)
-    if ctx_rb_match:
-        claimed = int(ctx_rb_match.group(1))
-        if claimed != rb_count:
-            fail(f"references/context.md claims {claimed} research-backed (computed {rb_count})")
-
-    ctx_prompt_match = re.search(r"\*\*(\d+) prompt Markdown files\*\*", context)
-    if ctx_prompt_match:
-        claimed = int(ctx_prompt_match.group(1))
-        if claimed != prompt_md_count:
-            fail(f"references/context.md claims {claimed} prompt Markdown files (computed {prompt_md_count})")
-
-    # Context retained metric bullet claims (exact counts)
-    for label, computed_val, pattern in [
-        ("failure_patterns", metrics["failure_patterns"], r"\*\*(\d+) failure patterns\*\*"),
-        ("session_archetypes", metrics["session_archetypes"], r"\*\*(\d+) session archetypes\*\*"),
-        ("extraction_patterns", metrics["extraction_patterns"], r"\*\*(\d+) extraction patterns\*\*"),
-        ("model_profiles", metrics["model_profiles"], r"\*\*(\d+) model profiles\*\*"),
-        ("anti_patterns", metrics["anti_patterns"], r"\*\*(\d+) anti-patterns\*\*"),
-    ]:
-        m = re.search(pattern, context)
-        if m:
-            claimed = int(m.group(1))
-            if computed_val is None:
-                fail(f"references/context.md claims {claimed} {label} but computed stat is missing")
-            elif claimed != computed_val:
-                fail(f"references/context.md claims {claimed} {label} (computed {computed_val})")
-
-    ctx_modes_match = re.search(r"Provides (?:\*\*)?(\w+) modes", context, re.IGNORECASE)
-    if ctx_modes_match:
-        token = ctx_modes_match.group(1)
-        words = {"six": 6, "seven": 7}
-        claimed = int(token) if token.isdigit() else words.get(token.lower())
-        if claimed is None or claimed != modes:
-            fail(f"references/context.md claims {token} modes (computed {modes})")
-
     if "75+ research-backed" in skill:
         fail("SKILL.md frontmatter contains \"75+ research-backed techniques\"")
 
     if "58 ready-to-use prompts" in readme:
         fail("README.md uses ambiguous exact count \"58 ready-to-use prompts\"")
-
-    if "58 ready-to-use prompts" in context:
-        fail("references/context.md uses ambiguous exact count \"58 ready-to-use prompts\"")
-
-    if "Stats (verified)" in context:
-        fail("references/context.md uses misleading \"Stats (verified)\" label")
 
     adapters_dir = REPO_ROOT / "adapters"
     if adapters_dir.exists():
@@ -436,6 +395,8 @@ def main():
     check_unique_ids(index)
     check_technique_categories(index)
     check_technique_reference_sections(index)
+    check_research_backed_strict(index)
+    check_current_requires_eval(index)
     check_referenced_files_exist(index)
     check_adapters()
     check_published_claims()

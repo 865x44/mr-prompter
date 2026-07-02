@@ -91,7 +91,7 @@ Full reference list: 200+ sources available at `ai-prompt-engineering-assistant-
 
 ### Claude 4 Sonnet
 - Native strength: XML tags. Use `<section>` containers liberally.
-- Order: Documents at TOP, query at BOTTOM (up to 30% quality gain).
+- Order: Explicit data/instruction boundaries; placement depends on model, surface, and retrieval strategy.
 - Extended thinking: Give high-level goals, NOT step-by-step instructions.
 - Default: Concise. Ask explicitly for detail if needed.
 
@@ -115,4 +115,4 @@ Full reference list: 200+ sources available at `ai-prompt-engineering-assistant-
 - CRITICAL: NO few-shot examples — consistently degrades performance.
 - Temperature: 0.5-0.7 (0.6 recommended).
 - Internal reasoning: Model reasons in `<think>` tags automatically.
-- Efficiency hack: "Think step by step, but only keep a minimum draft for each step, 5 words or fewer per step." Cuts tokens ~50%.
+- Efficiency hack (⚠ legacy advice, verify on current DeepSeek — reasoning models reason internally): "Think step by step, but only keep a minimum draft for each step, 5 words or fewer per step." Cuts tokens ~50%.

@@ -16,12 +16,12 @@ CLI = [sys.executable, str(REPO_ROOT / "scripts" / "prompt_engineer.py")]
 class TestSearch(unittest.TestCase):
     def test_search_chain_of_thought(self):
         result = subprocess.run(
-            CLI + ["search", "chain of thought"],
+            CLI + ["search", "chain-of-thought"],
             capture_output=True,
             text=True,
         )
         self.assertEqual(result.returncode, 0)
-        self.assertIn("Chain of Thought", result.stdout)
+        self.assertIn("Legacy Chain-of-Thought Fallback", result.stdout)
 
     def test_search_no_results(self):
         result = subprocess.run(

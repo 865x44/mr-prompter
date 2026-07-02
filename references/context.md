@@ -1,11 +1,11 @@
 # Prompt Engineer Skill — Overview
 
-A production-ready prompt engineering skill. Provides seven modes (**Generate**, **Verify**, **Improve**, **Chain**, **Model Select**, **Diagnose**, **Extract**) backed by **31 techniques**, **13 failure patterns**, **58 prompt Markdown files**, **6 model profiles**, and **12 research-backed flags**.
+A production-ready prompt engineering skill. Provides seven modes (**Generate**, **Verify**, **Improve**, **Chain**, **Model Select**, **Diagnose**, **Extract**) backed by **39 techniques**, **13 failure patterns**, **58 prompt Markdown files**, **6 model profiles**, and **21 research-backed flags**.
 
 ## Stats
 
-- **31 techniques** across reasoning, system, creative, and analytic categories
-- **12 research-backed flags** in the knowledge base (entries with `research_backed=true`; not independently verified)
+- **39 techniques** across 10 categories: system, reasoning, analytic, creative, context, agents, memory, security, evals, models
+- **21 research-backed flags** in the knowledge base (entries with `research_backed=true`; not independently verified)
 - **58 prompt Markdown files** under prompts/ (standalone prompts, index, and archive)
 - **6 model profiles** with platform-specific rules (Claude, GPT-4.1, o3, Gemini, DeepSeek, Sonar)
 - **13 failure patterns** for session diagnostics (codes I01-T02)
@@ -38,11 +38,11 @@ knowledge/
 
 | Platform | Key Rule |
 |----------|----------|
-| **Claude 4 Sonnet** | XML tags natively; documents at TOP, query at BOTTOM (+30% quality). Extended thinking for high-level goals. |
+| **Claude 4 Sonnet** | XML tags natively; explicit data/instruction ordering per surface. Extended thinking for high-level goals. |
 | **GPT-4.1** | Few-shot examples highest-leverage. Markdown sections. |
 | **o3** | SHORT prompts only. **NO CoT scaffolding** — built-in reasoning. Add "Formatting re-enabled" for markdown. |
 | **Gemini 2.5 Pro** | Instructions AFTER data for long contexts. Avoid negation without alternative. Temperature >= 1.0 for reasoning. |
-| **DeepSeek R1** | **NO system message** — user prompt only. **NO few-shot examples** — degrades performance. Temperature 0.5-0.7. Internal reasoning in `<think>`. |
+| **DeepSeek R1** | **NO system message** — user prompt only. **NO few-shot examples** — degrades performance. Temperature 0.5-0.7. Let internal reasoning work. |
 
 ## Model Selection Quick Reference
 

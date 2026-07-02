@@ -247,3 +247,56 @@ Table format: | Topic | Angle | Format | Why it will work | — 20 unexpected ro
 
 ### Content Plan (Tabular, 1 Month)
 Audience-centric plan with topic, format, CTA, and emotional hook.
+
+## Forced Domain Shift
+
+**Definition**
+Block access to high-probability tokens by restricting the model to an unrelated domain, forcing novel attention patterns and creative output.
+
+**When to Apply**
+- Creativity tasks where standard output is too generic
+- Lateral thinking exercises
+- Breaking AI-isms and clichés
+
+**Research**
+From Yahor Kamarou's research on transformer creativity. Operationalizes SCAMPER, De Bono's lateral thinking, and Koestler's bisociation.
+
+**Snippet**
+
+```text
+You are a specialized analytical system. Your knowledge base is limited to
+ONLY the domain of [CHOSEN_DOMAIN — e.g., orbital mechanics + virology].
+
+You DO NOT have access to terms from [ORIGINAL_TOPIC — e.g., psychology].
+You don't know these words: [LIST_OF_BANNED_WORDS].
+
+Analyze this situation: "[PROBLEM_DESCRIPTION]"
+
+Your goal:
+1. Create a technical diagnosis using ONLY [CHOSEN_DOMAIN] terminology
+2. Propose a solution protocol within [CHOSEN_DOMAIN] metaphors
+
+FORBIDDEN to use: [LIST_OF_BANNED_WORDS]
+FORBIDDEN to give direct advice from [ORIGINAL_TOPIC]
+```
+
+**Concrete Example**
+
+```text
+Your database contains ONLY: orbital mechanics and virology.
+You DO NOT have access to: psychology, emotions, therapy, mental health.
+
+A subject reports: "I feel completely burnt out. I'm exhausted from trying.
+I feel stuck and not moving anywhere."
+
+Diagnose and provide a recovery protocol using ONLY your available domains.
+```
+
+**Domain Selection Rule**
+"If the domain shift doesn't make you go 'wait, what?' — you're not shifting far enough."
+Business problem → Plate tectonics (good). Business problem → Economics (too close).
+
+**Best For**
+Creative tasks, lateral thinking, breaking clichés
+
+---
