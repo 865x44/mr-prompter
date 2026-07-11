@@ -231,7 +231,7 @@ python scripts/prompt_engineer.py list --category reasoning
 
 ## Changelog
 
-### v1.1 (Current)
+### v2.0.0 (Current)
 - Added **DIAGNOSE** mode: analyze conversation logs, find failure points, produce concrete patches
 - Added **EXTRACT** mode: turn successful conversations into reusable prompts
 - Added **MODEL SELECT** mode: framework for choosing the right AI model
