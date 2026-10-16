@@ -1,6 +1,7 @@
 ---
 name: prompt-engineer
 description: "Generate, verify, improve, chain, diagnose, and extract LLM prompts using 39 techniques with 21 research-backed flags. Triggers on: 'generate prompt', 'write a prompt', 'create prompt', 'audit prompt', 'verify prompt', 'improve prompt', 'optimize prompt', 'prompt engineering', 'system prompt', 'prompt chain', 'chain of thought', 'tree of thought', 'anti-sycophancy', 'prompt injection defense', 'CoT', 'ToT', 'prompt audit', 'chain prompts', 'strategic chain', 'select model', 'which model for', 'analyze this session', 'what went wrong', 'проанализируй диалог', 'почему не слушался', 'extract prompt from', 'make this a prompt', 'turn this chat into'. Supports seven modes: GENERATE, VERIFY, IMPROVE, CHAIN, MODEL SELECT, DIAGNOSE, EXTRACT."
+hide: true
 ---
 
 # Prompt Engineer
