@@ -119,6 +119,44 @@ class TestChainTwins(unittest.TestCase):
                 self.assertGreaterEqual(len(dv), 1)
                 self.assertEqual(vv, [])
 
+    def test_fusion_ready_variant_no_paste_tokens(self):
+        """Fusion-ready chain packs must contain no unresolved [PASTE tokens."""
+        # Negative probe: human-transfer placeholder is detected
+        human_transfer_sample = (
+            "P1: extract criteria\n"
+            "HANDOFF: E1\n"
+            "P2: From evidence pack E1:\n[PASTE E1 HERE]\n"
+            "USES: E1\n"
+        )
+        self.assertRegex(
+            human_transfer_sample,
+            r"\[PASTE\b",
+            "Human-transfer pack expected to have [PASTE token",
+        )
+
+        # Fusion-ready contract: no [PASTE tokens allowed in prompt body/chain steps
+        fusion_ready_sample = (
+            "P1: extract criteria\n"
+            "HANDOFF: E1\n"
+            "P2: From evidence pack E1 above: apply hard constraint.\n"
+            "USES: E1\n"
+        )
+        self.assertNotRegex(
+            fusion_ready_sample,
+            r"\[PASTE\b",
+            "Fusion-ready pack must not contain [PASTE tokens",
+        )
+
+        # Assert all valid twin fixtures satisfy the Fusion-ready token rule
+        for pair in PAIRS:
+            valid_path = FIXTURES / f"w2-{pair}-valid.md"
+            content = valid_path.read_text(encoding="utf-8")
+            self.assertNotRegex(
+                content,
+                r"\[PASTE\b",
+                f"{valid_path.name} contains forbidden [PASTE token for Fusion-ready variant",
+            )
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -393,6 +393,18 @@ Deliver the pack: task, P1..PK (texts), invariants, evidence rules, success
 criteria, stage handoffs. Chains with 3+ phases → file
 (`~/Documents/<topic>-chain.md`); in chat: path + one-line summary.
 
+Delivery variants:
+- **human-transfer**: Multi-session manual execution across tools/chats; each
+  downstream prompt is self-contained and contains explicit `[PASTE ...]`
+  placeholders (e.g. `[PASTE PHASE N OUTPUT HERE]`, `[PASTE E1 HERE]`) for
+  manual transfer of intermediate artifacts.
+- **Fusion-ready**: Execution in persistent, multi-turn independent lanes
+  (OMP `omp-fusion v2`); P(i+1) runs in the same session context as P(i) and
+  consumes the frozen upstream artifact directly. Unresolved paste placeholders
+  (such as `[PASTE ...]` tokens) are STRICTLY FORBIDDEN in Fusion-ready prompts.
+  Downstream prompts MUST refer directly to upstream artifacts by name or context
+  (e.g. "From evidence pack E1 above: ...").
+
 Fusion handoff (authoring side only — mr-prompter does NOT run Fusion):
 - Frozen snapshot = an immutable history FILE, not truth: later steps may
   explicitly revise earlier conclusions, never silently substitute.
