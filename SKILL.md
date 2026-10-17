@@ -250,15 +250,29 @@ Run Rule 1 on the submitted prompt. Security issues must be fixed FIRST before a
 ### Step 1 — Run VERIFY
 Run the full VERIFY pipeline internally. Identify top 3 weaknesses.
 
-### Step 2 — Classify Weaknesses
-For each weakness, classify:
-- **Structural**: Missing sections, poor flow
-- **Anti-pattern**: Negations without alternatives, edge-case lists, AI-isms
-- **Model mismatch**: Wrong techniques for target model
-- **Safety gap**: Missing untrusted data handling, no boundaries
-- **Clarity**: Ambiguous instructions, missing format spec
+### Step 2 — Classify Weaknesses (evidence-led, scoped)
+For each VERIFY finding, classify AND scope the repair surface:
+- **Structural / anti-pattern / model mismatch / safety gap / clarity** (as
+  before) — plus: is the fix LOCAL (one clause) or does the cause live in an
+  interface/contract between parts (then a cross-step or global repair is
+  allowed — never "treat P1 only inside P1" as a law, never auto-add
+  downstream guardrails either; justify the scope).
+- Mark each repair slot as editing a FROZEN INVARIANT (goal, hard
+  constraints, evidence policy — needs user sign-off) or an EDITABLE SLOT
+  (wording, examples, ordering — free to change).
 
-### Step 3 — Select Fixes
+### Step 3 — Subtractive repair first
+Before adding ANY new rule, try in order: DELETE the offending clause,
+GENERALIZE it, MERGE it with a neighbor. Prefer portable decision
+boundaries over one-off crutches — but case-specific requirements stay
+legal when they encode a real hard constraint (regulatory, legal, product
+edge case). New rules must earn their place the same way CHAIN steps do.
+
+With a trace, build a bounded, sanitized failure packet for the repair:
+input/reference, observed vs expected, failure reason, stage, success cases
+that must keep passing, runtime notes. No secrets, no blobs, no unverified
+judge opinions inside the instructions.
+
 Match weaknesses to knowledge base entries (from `references/` files):
 - No hierarchy -> `system.md` hierarchy pattern
 - Sycophantic output -> `analytic.md` anti-sycophancy module
@@ -266,12 +280,13 @@ Match weaknesses to knowledge base entries (from `references/` files):
 - Factual hallucinations -> `reasoning.md` chain-of-verification
 - Processing documents -> `system.md` semantic isolation
 
-### Step 4 — Reconstruct
-Generate improved version with:
-- Added missing sections
-- Rewritten anti-patterns -> positive patterns + examples
-- Model-specific optimizations (shorten for o3, XML for Claude, etc.)
-- Injected safety boundaries if missing
+### Step 4 — Reconstruct + show the diff
+Generate the improved version, then deliver a real diff (changed hunks only),
+the success cases it preserves, and one suggested regression case. The words
+"candidate improved" may appear ONLY after a verification result — never as
+self-praise. After every repair, answer three questions (confirmation may
+await execution): old successes preserved? original failure addressed?
+unnecessary patch removed?
 
 ### Step 5 — Deliver (7-Section Structure)
 
@@ -288,9 +303,9 @@ Generate improved version with:
 - Which principle/technique applied
 - Expected impact on output quality
 
-**4. Audit Score Improvement**
-- Old score -> New score
-- Dimensions that improved
+**4. Findings Resolution**
+- Which VERIFY findings are resolved, which remain (no scores — finding list
+  before/after)
 
 **5. Validation Guidance**
 - 2-3 test cases to validate improvements
@@ -309,55 +324,80 @@ Generate improved version with:
 
 ## CHAIN Mode
 
-Build a sequential multi-phase prompt chain for deep topic analysis. Context accumulates across phases.
-
-**Default chain**: Phase 1 (custom) -> Phase 2 (blind spots) -> Phase 3 (distillation)
-**Optional**: `+ecosystem` adds Phase 2B (Ecosystem Scout), `+meta` adds Phase 4 (Master Synthesis)
-
-Read `references/reasoning.md` section "Strategic Prompt Chain" for full templates.
+Build a justified multi-step prompt structure — never "complex → three rounds"
+by default. The default challenger is always K=1 (one good prompt); K>1 only
+when each extra step earns its place.
 
 ### Step 0 — Security Scan
-Assess the full chain for injection risks, especially if any phase processes external data or web search results.
+Assess the full chain for injection risks, especially if any phase processes
+external data or web search results.
 
-### Step 1 — Gather requirements
-Ask the user:
-- What is the topic / project?
-- What goals should Phase 1 cover? (suggest 2-4 analytical perspectives)
-- How many AI sessions are planned? (if multiple -> include Phase 4 template)
-- Add Ecosystem Scout? (default: no)
-- Target model for the chain? (recommend Claude 4 Sonnet or Gemini 2.5 Pro for long context)
+### Step 1 — Justify K (deletion test)
+Start from K=1. Add step P(i+1) ONLY if P(i) creates a new artifact,
+information, operation, or verifiable criterion that P(i+1) consumes — and
+say which. For every step beyond the first, answer: "what is lost if this
+step is removed?" If the answer is "depth" without a named artifact, collapse
+it. Never prescribe a fixed 3–4 steps. K=1 is a valid CHAIN outcome, including
+when a Fusion run exists downstream.
 
-### Step 2 — Generate Phase 1 perspectives
-For each perspective (2-4), build a prompt using the template in `references/reasoning.md`.
+### Step 2 — Pick a family (optional, pick at most one)
+- **research**: hypotheses/questions → check evidence → reconstruct.
+- **decision**: options → stress-test → choose.
+- **audit**: inspect → independently verify contested facts (verification must
+  use EXTERNAL evidence, not a re-read of P1 — re-reading P1 in a fresh
+  session is review, not independent verification; never label it as such).
+- **creative**: diverge → compare/combine → optional edit.
+Skip families when the task is a straight pipeline (extract → transform →
+format); a family is scaffolding, not a requirement.
 
-Rules:
-- Role = expert who has seen this specific type of failure, NOT generic
-- Task = 3 specific questions with named entities
-- Cognitive forcing: assign one per perspective — Step-Back / Adversarial Gate / Formulation Invariance
-- Constraints: FACT/CONCLUSION/HYPOTHESIS labeling, max 250-350 words, no preamble, first word = diagnosis
+### Step 3 — Write per-step authoring contracts (lightweight)
+Each step gets five lines — no heavy JSON in the content answer:
+`purpose / inputs / downstream artifact (exact handoff to the next step) /
+completion signal / failure signal`. Name the handoff artifact precisely
+("list of 3 falsifiable hypotheses", not "analysis"). The original goal and
+invariants stay visible to every step; early conclusions are labeled fallible
+work product that a later step may explicitly revise — never silently replace.
 
-Vary cognitive forcing across perspectives — don't use the same one twice.
+### Step 4 — Semantic chain preflight (before delivery)
+Check the P1..PK TEXTS against their claimed handoffs, with clause/line
+citations — never a score:
+- Does each step consume the previous step's ACTUAL artifact (not its label)?
+- Information preservation: is anything created in P(i) silently dropped in
+  P(i+1) without a stated filter reason?
+- False dependencies: stages like "analyse deeper" with no new input,
+  artifact, or criterion — collapse them.
+- Premature convergence: does P2 lock onto P1's first hypothesis without the
+  comparison the contract promised?
+- Source/evidence policy: which steps may introduce new sources, and what
+  counts as evidence there?
+- No forbidden states: a step that both "decides" and "keeps all options
+  open"; verification without external evidence.
+Fix or collapse; record what changed.
 
-### Step 3 — Append stable phases
-Copy verbatim from `references/reasoning.md`:
-- **Phase 2** (360 Blind Spots) — always included
-- **Phase 2B** (Ecosystem Scout) — only if user requested `+ecosystem`
-- **Phase 3** (Distillation) — always included
-- **Phase 4** (Master Synthesis) — only if user requested `+meta`
+### Step 5 — Single vs multi-session (unchanged rules, condensed)
+Single session (one chat, ≤4 phases, one model, <100K tokens): no paste
+placeholders. Multi-session (multiple tools, huge context, days apart):
+each prompt self-contained with `[PASTE PHASE N OUTPUT HERE]` placeholders.
 
-### Step 4 — Single vs multi-session
-Before delivering, decide execution model:
+### Step 6 — Deliver: authoring pack + Fusion handoff
+Deliver the pack: task, P1..PK (texts), invariants, evidence rules, success
+criteria, stage handoffs. Chains with 3+ phases → file
+(`~/Documents/<topic>-chain.md`); in chat: path + one-line summary.
 
-**Single session** (one continuous chat): Context accumulates automatically. Use for up to ~4 phases, one model, under 100K tokens total. Prompts without "paste Phase N output here" placeholders.
-
-**Multi-session** (phases in different sessions/tools): Each prompt must be self-contained. Use when spanning multiple AI tools, context too large, phases run days apart. Prompts include explicit "[PASTE PHASE N OUTPUT HERE]" placeholders.
-
-**Signals for multi-session**: User mentions multiple different AI tools; chain runs over multiple days; any phase output > 10K tokens; `+meta` flag set.
-
-### Step 5 — Deliver
-Chains with 3+ phases -> write to file (`~/Documents/<topic>-chain.md`), not into chat. Long chains in chat pollute context. In chat: only file path + one-line structure summary.
-
-Include: chain overview, model recommendation, security notes for data-processing phases, clarifying questions about execution preferences.
+Fusion handoff (authoring side only — mr-prompter does NOT run Fusion):
+- Frozen snapshot = an immutable history FILE, not truth: later steps may
+  explicitly revise earlier conclusions, never silently substitute.
+- The pack is compatible with the live Fusion contract (sequential P1..PK
+  release, blind lanes, per-step manifests, judge schema, repair OFF) as
+  recorded in `docs/preflight-vnext-2026-10-17.md` §P3.
+- Ledger weight is a VARIANT, not a mandate: `hypotheses_only` (conclusion-
+  light P1, creative search) vs `full_claims` vs `minimal`. Do NOT fix
+  `step_ledger_mode` as required until compatibility with the installed
+  Fusion is confirmed; conclusion-light steps stay conclusion-light.
+- Incompatibility with Fusion → written change request + plain-text fallback
+  pack. Never a silent patch, never simulated execution, never duplicated
+  claim namespaces or judge schemas (Fusion owns runtime IDs, snapshots,
+  judge schema, quorum, finalization, repairs).
 
 ---
 
@@ -389,16 +429,21 @@ Ask the user to provide:
 
 If user only says "it didn't work" without details -> ask for the log. The log is essential.
 
-### Step 2 — Parse and Analyze
+### Step 2 — Classify failure layer (six classes, no guessing)
+Assign each failure point to exactly one layer, with the evidence pointer
+that puts it there:
+`prompt design / model-fit / source-input / tool-runtime / judge-evaluator /
+stochastic-unknown`. Without a trace and controlled parameters, cross-layer
+attribution is `insufficient evidence` — write that, do not pick a favorite.
+For K>1 chains record TWO separate fields: earliest OBSERVABLE failure
+(step + quote) and HYPOTHESIZED root cause (marked as hypothesis). They are
+not the same thing.
 
-Read `references/diagnose.md` for the full failure pattern taxonomy (codes I01-I02, F01-F02, H01-H02, C01-C02, R01-R02, S01, T01-T02).
-
-For the log:
-1. **Count turns**: total, corrections, clarifications
-2. **Identify failure points**: Where LLM deviated — with exact quotes
-3. **Classify each failure**: Match to pattern codes from `references/diagnose.md`
-4. **Trace root causes**: Why did this happen — missing constraint? instruction decay? format ambiguity?
-5. **Calculate metrics**: wasted turns %, first-try success rate, repetition count
+Cross-lane variance: if 1 of 3 lanes failed, do NOT gate on it — one lane may
+be literally executing an ambiguous instruction (n≪3 proves nothing either
+way). 3/3 failing still does not convict the prompt (shared bad source pack
+fails everywhere). Propose discriminating tests instead: repeat run, pinned
+model/surface, identical source pack, single mutation with all else fixed.
 
 ### Step 3 — Generate Patches
 
@@ -411,38 +456,25 @@ For each root cause, produce a concrete patch:
 Expected: [what changes in LLM behavior]
 ```
 
-Patches must be:
-- **Specific**: Not "add more context" but "Add `<constraints>` block after Role section with: ..."
-- **Copy-paste ready**: Exact text the user can paste into their prompt
-- **Prioritized**: Critical (session-breaking) first, then High, Medium, Low
-- **Located**: Where in the prompt to place each patch
+Patches must be specific, copy-paste ready, prioritized, located (as before).
 
-### Step 4 — Deliver (Diagnostic Report Structure)
+### Step 4 — Deliver (observation-first report)
 
-**1. Session Summary**
-- Topic, total turns, session archetype (from `references/diagnose.md`)
-- Wasted turns ratio, first-try success rate
+**1. Session Summary** — topic, turns, archetype, waste ratio (as before).
 
-**2. Failure Points (chronological)**
-For each failure:
-- Turn number + pattern code
-- Quote showing the failure
-- Root cause + patch
+**2. Failure Points (chronological)** — turn + pattern code + quote + layer
+assignment + evidence pointer.
 
-**3. Priority Patch List**
-| Priority | Patch | Expected Effect |
-|----------|-------|-----------------|
+**3. Earliest observable failure vs hypothesized root cause** — stated
+separately, with confidence and what is missing to confirm.
 
-**4. Session Metrics Dashboard**
-- Wasted turns: X% | First-try success: X% | Repetitions: X | Scope creep turns: X
+**4. Competing hypotheses** — at least one alternative reading wherever
+evidence is thin, plus the minimal experiment (or prompt tweak) that would
+discriminate.
 
-**5. Prevention for Next Session**
-- 2-3 changes to make BEFORE starting a similar session
-- Copy-paste template snippet if applicable
+**5. Priority Patch List** (table as before) + Prevention snippet.
 
-**6. Questions** (1-2)
-- What model was used?
-- Any system prompt or custom instructions in play?
+Questions (1-2) only for genuinely missing inputs.
 
 ---
 
@@ -470,9 +502,15 @@ Ask for:
 - **What they want to reuse**: The specific behavior/output quality they want to capture
 - **What's variable**: What changes each time (topic, data, context) vs what stays constant
 
-### Step 2 — Extract Components
+### Step 2 — Extract Components (generalizable core only)
 
 Read `references/extract.md` for the 5 patterns (A: Clarification Cascade, B: Format Negotiation, C: Scope Drift Recovery, D: Tone Calibration, E: Context Accumulation).
+
+From the log, extract the GENERALIZABLE part — goal, contract, applicability,
+invariants, eval cases, known failure modes. Strip private traces, session-
+specific bulk, and one-off filler — but NEVER strip domain constraints
+that correctness depends on (thresholds, safety bounds, required fields).
+When in doubt whether a constraint is load-bearing, keep it and mark WHY.
 
 From the log, extract:
 - **Role**: Persona that produced best output
@@ -508,7 +546,10 @@ Validate against checklist from `references/extract.md`:
 - What stays fixed
 
 **5. Testing Checklist**
-- 2-3 test cases for the standalone prompt
+- 2–3 test cases for the standalone prompt
+- Validation status, stated plainly: `empirically validated` ONLY with a
+  confirmed successful execution behind it — otherwise `unvalidated draft`,
+  never implied as proven.
 
 ---
 
