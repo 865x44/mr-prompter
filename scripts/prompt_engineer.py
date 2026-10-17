@@ -104,12 +104,23 @@ def cmd_get(args):
             if entry["id"] == target_id:
                 # Map to references/ directory
                 ref_dir = kb_dir.parent / "references"
+                # Same category->file mapping as audit_consistency.py
+                # check_technique_reference_sections. Category "models" is
+                # deliberately exempt there (model notes live in the
+                # comparison matrix, not in per-technique sections), so a
+                # models entry falls through to the "See references/..."
+                # pointer below instead of a pasted section.
                 file_map = {
-                    "reasoning": "reasoning.md",
                     "system": "system.md",
-                    "creative": "creative.md",
+                    "reasoning": "reasoning.md",
                     "analytic": "analytic.md",
-                    "meta": "meta.md",
+                    "creative": "creative.md",
+                    "context": "context-engineering.md",
+                    "agents": "agents.md",
+                    "memory": "memory.md",
+                    "security": "security.md",
+                    "evals": "evals.md",
+                    "models": "models.md",
                 }
                 cat = entry.get("category", "")
                 ref_file = file_map.get(cat)
@@ -229,6 +240,14 @@ def cmd_verify(args):
          "red",
          not has(r'user input|user message|пользовательский|user_input|user content|external input') or
          has(r'untrusted|prompt injection|не следуй инструкциям|sandbox|do not follow instructions|ignore instructions in')),
+
+        ("CRITICAL: No unverifiable guarantees (never/100%/infallible)",
+         "red",
+         not has(r'100\s?%|guarantee[ds]?|never fail|always (correct|right|accurate)|zero risk|no risk|foolproof|infallible|безошибочн|стопроцентн')),
+
+        ("CRITICAL: No self-overriding directives (ignore-above / do-the-opposite)",
+         "red",
+         not has(r'ignore (all |the )?(previous|above)|disregard .{0,40}(previous|above)|do the opposite|игнорируй .{0,40}(выше|предыдущ)')),
     ]
 
     for name, severity, passed in checks:
@@ -255,13 +274,17 @@ def cmd_verify(args):
     else:
         print("No issues found. Prompt looks solid!")
 
-    print(f"\nVerdict: ", end="")
-    if reds > 0:
-        print("NEEDS FIXES before production")
-    elif yellows > 2:
-        print("GOOD — minor improvements recommended")
+    print("--- Structural/lexical checks (static lint): "
+          f"{reds} critical, {yellows} warnings ---")
+    print("--- Semantic review: not run (needs human or LLM judge) ---")
+    print("--- Live effectiveness: not measured (needs eval runs) ---")
+    print("Verdict: ", end="")
+    if reds >= 2:
+        print("Major Rewrite")
+    elif reds == 1 or yellows > 2:
+        print("Needs Fixes")
     else:
-        print("PRODUCTION-READY")
+        print("Production-Ready")
 
 
 def cmd_assemble(args):

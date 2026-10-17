@@ -2,6 +2,12 @@
 """
 Consistency audit for mr-prompter.
 Exits non-zero if mechanically countable facts diverge from published claims.
+
+Scope: KB / internal-metadata consistency only (counts, categories,
+reference-section mapping, research/evidence flags, published-claim drift).
+This script is NOT a semantic auditor: it cannot judge prompt quality,
+chain coherence, or live effectiveness. Those need human/LLM review and
+eval runs (see docs/preflight-vnext-2026-10-17.md, frozen tasks T1-T8).
 """
 
 import json

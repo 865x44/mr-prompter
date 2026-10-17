@@ -12,8 +12,8 @@
 
 | Metric | Definition | Authoritative Source | Current Value |
 |--------|-----------|----------------------|---------------|
-| `techniques` | Number of objects in `knowledge/index.json["techniques"]` | `knowledge/index.json` | 31 |
-| `research_backed` | Number of technique entries with `"research_backed": true` | `knowledge/index.json` | 12 |
+| `techniques` | Number of objects in `knowledge/index.json["techniques"]` | `knowledge/index.json` | 39 |
+| `research_backed` | Number of technique entries with `"research_backed": true` | `knowledge/index.json` | 21 |
 | `patterns` | Number of objects in `knowledge/index.json["patterns"]` | `knowledge/index.json` | 5 |
 | `templates` | Number of objects in `knowledge/index.json["templates"]` | `knowledge/index.json` | 3 |
 | `anti_patterns` | Number of objects in `knowledge/index.json["anti_patterns"]` | `knowledge/index.json` | 8 |

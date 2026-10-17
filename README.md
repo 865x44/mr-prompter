@@ -72,7 +72,7 @@ Session went great, save it? ──────→ EXTRACT
 **Skill does:**
 1. Security scan (no injection risks detected)
 2. Picks techniques: Role Prompting + Task Decomposition + Constrained Output
-3. Recommends: Claude 4 Sonnet (primary) / DeepSeek R1 (alternative for speed)
+3. Recommends: Claude 4 Sonnet (primary; alternatives per MODEL SELECT matrix)
 4. Delivers 7-section output: Security Assessment → Prompt → Model Recommendation → Technique Analysis → Testing Guide → Questions → Save Pattern?
 
 **You get:** A complete system prompt you paste into Claude/ChatGPT/whatever.
@@ -149,6 +149,11 @@ prompt-engineer/
 │   ├── analytic.md       # Anti-sycophancy, epistemic humility, Socratic
 │   ├── creative.md       # Negative prompting, archetypes, entropy, Neurotexts
 │   ├── cases.md          # Documented failure modes
+│   ├── agents.md         # Strategic chain, multi-agent debate, agent loops
+│   ├── context-engineering.md # Progressive disclosure, context budgets
+│   ├── memory.md         # Memory state hygiene, cross-session persistence
+│   ├── security.md       # Injection defense, untrusted-data boundaries
+│   ├── evals.md          # Eval harnesses, hill-climbing, cost discipline
 │   ├── models.md         # Model selection framework + decision tree
 │   ├── diagnose.md       # Session diagnostics methodology
 │   └── extract.md        # Prompt extraction from conversations
