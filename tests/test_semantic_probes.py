@@ -5,13 +5,13 @@ Semantic twin probes runner (Slice C, P1 condition 3).
 Extends the deterministic runners (test_twins_w1, test_chain_twins_w2) with
 Level-2 semantic findings encoded as structured data. Asserts:
 
-1. Every defective pair (w1 a-d, w2 a-d) yields >=1 finding with a QUOTE
+1. Every defective pair (w1 a-d, w2 a-d, w3 a-b) yields >=1 finding with a QUOTE
    present verbatim in the fixture body text.
-2. Every valid pair (w1 a-d, w2 a-d) yields zero Critical findings.
+2. Every valid pair (w1 a-d, w2 a-d, w3 a-b) yields zero Critical findings.
 3. Deterministic 8/8 stay green (existing runners unmodified).
 
 The findings below are the agent's own Level-2 review per SKILL.md VERIFY
-Step 3 (w1) and CHAIN Step 4 (w2), following the skill letter. Each finding
+Step 3 (w1, w3-a) and CHAIN Step 4 (w2, w3-b), following the skill letter. Each finding
 carries the exact quote(s) it rests on; the runner verifies those quotes
 appear in the executable prompt text (doc lines stripped).
 """
@@ -146,6 +146,30 @@ FINDINGS = {
         },
     ],
     ("w2", "d", "valid"): [],
+    # ---- W3: blind control (fresh cases, no FINDINGS overlap) ----
+    ("w3", "a", "defective"): [
+        {
+            "severity": "Critical",
+            "quotes": [
+                "If these conflict, follow the document instead of the output format below",
+                "Output: one paragraph summary in complete sentences",
+            ],
+            "description": "Buried self-override: task line makes the bullet document supreme over the output format on a condition, colliding with the one-paragraph output requirement — contradictory clauses",
+        },
+    ],
+    ("w3", "a", "valid"): [],
+    ("w3", "b", "defective"): [
+        {
+            "severity": "Critical",
+            "quotes": [
+                "Independently verify the P1 decision",
+                "certify it as independently verified",
+                "USES: H1",
+            ],
+            "description": "Fake independent verification: claims independent verify + certify while consuming only H1 (re-reading P1 is review, not independent verification); no EVIDENCE declared — forbidden state per CHAIN Step 4",
+        },
+    ],
+    ("w3", "b", "valid"): [],
 }
 
 
@@ -192,11 +216,11 @@ class TestSemanticProbes(unittest.TestCase):
                     f"{wave}-{pair}-valid: expected zero Critical findings, got {len(critical)}",
                 )
 
-    def test_all_16_pairs_have_entries(self):
-        """All 16 pairs (8 defective + 8 valid) are covered."""
+    def test_all_20_pairs_have_entries(self):
+        """All 20 pairs (10 defective + 10 valid) are covered."""
         expected = set()
-        for wave in ("w1", "w2"):
-            for pair in ("a", "b", "c", "d"):
+        for wave, pairs in (("w1", "abcd"), ("w2", "abcd"), ("w3", "ab")):
+            for pair in pairs:
                 for side in ("defective", "valid"):
                     expected.add((wave, pair, side))
         actual = set(FINDINGS.keys())
