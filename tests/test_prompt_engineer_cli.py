@@ -188,6 +188,25 @@ class TestAssemble(unittest.TestCase):
         self.assertEqual(result.returncode, 0)
         self.assertIn("Model-Specific Notes:", result.stdout)
 
+    def test_assemble_avoid_for_flagged_not_excluded(self):
+        """avoid_for is advisory: o3 still sees CoT/ToT as flagged, never silently dropped."""
+        import tempfile
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".md", delete=False) as f:
+            f.write("test")
+            goal = f.name
+        try:
+            result = subprocess.run(
+                CLI + ["assemble", "--model", "o3", "--category", "reasoning", "--goal", goal],
+                capture_output=True,
+                text=True,
+            )
+        finally:
+            import os
+            os.unlink(goal)
+        self.assertEqual(result.returncode, 0)
+        self.assertIn("flagged — check snapshot/surface before use", result.stdout)
+        self.assertNotIn("never scaffold", result.stdout.lower())
+
 
 class TestWave0GetRouting(unittest.TestCase):
     """Every KB category must resolve to a real reference section, not a stub."""

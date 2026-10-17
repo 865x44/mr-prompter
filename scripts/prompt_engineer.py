@@ -314,9 +314,12 @@ def cmd_assemble(args):
         techniques = index.get("techniques", [])[:3]
 
     compatible = []
+    flagged = []
     for t in techniques:
         avoid = [a.lower() for a in t.get("avoid_for", [])]
-        if model not in avoid:
+        if model in avoid:
+            flagged.append(t)  # snapshot/surface-scoped redundancy note, NOT a hard ban (see avoid_for_scope)
+        else:
             compatible.append(t)
 
     selected_techniques = compatible[:3]
@@ -350,6 +353,9 @@ def cmd_assemble(args):
         print(f"- **Tags:** {', '.join(t.get('tags', []))}")
         if t.get('gain_reported'):
             print(f"- **Gain (historical baseline/era — not a guarantee on your runner):** {t['gain_reported']}")
+    for t in flagged[:2]:
+        print(f"\n### {t['name']} (flagged — check snapshot/surface before use)")
+        print(f"- **Why flagged:** {t.get('avoid_for_scope', 'listed in avoid_for — verify your snapshot/surface')}")
 
     print(f"\n## Model-Specific Notes:")
     note_groups = index.get("assemble_model_notes")

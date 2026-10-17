@@ -157,9 +157,7 @@ compact contract from Step 1 plus the smallest sufficient prompt body:
   is the point. Skip for self-contained single questions.
 - **Few-shot examples**: include only when the output shape is hard to specify
   declaratively. Prefer 1–2 minimal examples over a fixed 3–5.
-- **Explicit CoT/ToT scaffolding**: only for models without built-in reasoning
-  AND tasks where stepwise output is consumed (check `avoid_for` in index;
-  never scaffold o-series / DeepSeek R1).
+- **Explicit CoT/ToT scaffolding**: only when stepwise output is consumed downstream AND the target snapshot/surface lacks usable native reasoning. For built-in-reasoning snapshots (o-series, DeepSeek R1 and peers — verify yours) an explicit scaffold is usually redundant: prefer a short instruction and let the model reason internally. Decide per snapshot/surface via `avoid_for` + `surface_notes` + `migration_note` in index — never by family name alone.
 - **Metacognitive scaffold** (plan-first, confidence flags, verification step):
   only when errors are costly and the envelope allows the token budget.
 - **Large corpora**: state context relevance + source IDs, keep data isolated

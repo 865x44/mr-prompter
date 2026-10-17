@@ -113,9 +113,10 @@
       "status": "current",
       "evidence_grade": "A",
       "eval_prompt": "Run exact same reasoning set with no scaffold, brief plan-first, and full CoT; keep only if accuracy gain exceeds token/latency cost.",
-      "surface_notes": "",
+      "surface_notes": "Check your snapshot/surface before scaffolding; absence of native reasoning there re-enables this technique.",
       "migration_note": "Transfer scope narrowed 2026-10-17 (Wave 1): reported gains were measured on pre-built-in-reasoning models/datasets of their era; transfer of the explicit scaffold form to current built-in-reasoning models is unverified (see avoid_for). Grade retained for the historical result, NOT as a universal default for modern models.",
-      "source_type": "practice"
+      "source_type": "practice",
+      "avoid_for_scope": "snapshot/surface-scoped: redundant on built-in-reasoning snapshots — verify yours; not a family-wide ban"
     },
     {
       "id": "tree-of-thought",
@@ -146,9 +147,10 @@
       "status": "current",
       "evidence_grade": "A",
       "eval_prompt": "Game of 24 mini-set (10 puzzles): ToT 3-experts prompt vs direct answer; expect branch exploration to beat baseline on solve rate",
-      "surface_notes": "",
+      "surface_notes": "Check your snapshot/surface before scaffolding; absence of native reasoning there re-enables this technique.",
       "migration_note": "Transfer scope narrowed 2026-10-17 (Wave 1): reported gains were measured on pre-built-in-reasoning models/datasets of their era; transfer of the explicit scaffold form to current built-in-reasoning models is unverified (see avoid_for). Grade retained for the historical result, NOT as a universal default for modern models.",
-      "source_type": "practice"
+      "source_type": "practice",
+      "avoid_for_scope": "snapshot/surface-scoped: redundant on built-in-reasoning snapshots — verify yours; not a family-wide ban"
     },
     {
       "id": "step-back-prompting",
@@ -230,9 +232,10 @@
       "status": "current",
       "evidence_grade": "A",
       "eval_prompt": "20 math tasks with fixed answers: 5-sample majority vote vs single run; expect accuracy gain that justifies token cost",
-      "surface_notes": "",
+      "surface_notes": "Check your snapshot/surface before scaffolding; absence of native reasoning there re-enables this technique.",
       "migration_note": "Transfer scope narrowed 2026-10-17 (Wave 1): reported gains were measured on pre-built-in-reasoning models/datasets of their era; transfer of the explicit scaffold form to current built-in-reasoning models is unverified (see avoid_for). Grade retained for the historical result, NOT as a universal default for modern models.",
-      "source_type": "practice"
+      "source_type": "practice",
+      "avoid_for_scope": "snapshot/surface-scoped: redundant on built-in-reasoning snapshots — verify yours; not a family-wide ban"
     },
     {
       "id": "multi-agent-debate",
@@ -423,9 +426,10 @@
       "status": "current",
       "evidence_grade": "A",
       "eval_prompt": "Compositional 2+step tasks: decompose-then-solve vs direct; expect gain on multi-step, none on trivial",
-      "surface_notes": "",
+      "surface_notes": "Check your snapshot/surface before scaffolding; absence of native reasoning there re-enables this technique.",
       "migration_note": "Transfer scope narrowed 2026-10-17 (Wave 1): reported gains were measured on pre-built-in-reasoning models/datasets of their era; transfer of the explicit scaffold form to current built-in-reasoning models is unverified (see avoid_for). Grade retained for the historical result, NOT as a universal default for modern models.",
-      "source_type": "practice"
+      "source_type": "practice",
+      "avoid_for_scope": "snapshot/surface-scoped: redundant on built-in-reasoning snapshots — verify yours; not a family-wide ban"
     },
     {
       "id": "architecture-hierarchy",
