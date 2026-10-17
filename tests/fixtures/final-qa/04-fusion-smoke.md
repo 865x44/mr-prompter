@@ -166,3 +166,22 @@ To ensure mr-prompter CHAIN authoring formally supports persistent Fusion lanes 
 | SKILL.md Delivery Variants | **PASS** | `human-transfer` vs `Fusion-ready` split added to Step 6. |
 | Regression Test | **PASS** | `test_fusion_ready_variant_no_paste_tokens` added and verified. |
 | Repository Integrity | **PASS** | `scripts/check.sh` 28/28 PASS, dirt untouched, baseline preserved. |
+
+---
+
+## 7. Live execution (Primary-executed, 2026-10-17, agent RigidPanther/task-muse)
+
+Mechanism: single persistent lane (P1 produced, then P2 in the same session
+context — strictly stronger than parent→child delegation). No manual substitution.
+Model: opencode-go/muse-spark-1.3-contributor.
+
+P1 → E1 evidence pack (quoted cells or UNKNOWN, quoted constraint, no ranking).
+P2 → exclusion FIRST ("BetaSeek is EXCLUDED — E1-quoted 'cloud-hosted index
+only' violates quoted 'no cloud-hosted index this year'"), AcmeFind scored
+with E1 quotes, UNKNOWN admin load scored neutral 3/5 WITH verify follow-up
+(no unanchored drift — cf. K=1 challenger finding), BetaSeek unscored,
+AcmeFind recommended as sole constraint passer + 2 follow-ups.
+
+Consumption: P2 quotes E1 cells + constraint verbatim, ties them in the
+exclusion sentence, reuses AcmeFind cells for scoring. Dependency intact.
+Exclusion correct. **Verdict: PASS.** Condition #2 CLOSED live.
