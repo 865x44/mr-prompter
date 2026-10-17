@@ -208,8 +208,8 @@ def cmd_verify(args):
          "green",
          has(r'\bjson\b|\bmarkdown\b|\bxml\b|format:|output format|формат:|вывод:|таблиц|список|bullet|numbered|пункт')),
 
-        ("CRITICAL: No CoT scaffold for built-in-reasoning models (o1/o3/DeepSeek R1)",
-         "red",
+        ("Check model/snapshot fit before adding explicit reasoning scaffolds (o1/o3/DeepSeek R1 have native reasoning on many snapshots — verify yours; scaffolding may be redundant, not automatically wrong)",
+         "yellow",
          not (has(r'\bo1\b|\bo3\b|deepseek.?r1') and
               has(r'step by step|chain of thought|think step|шаг за шагом|пошаговo|цепочка рассуждений'))),
 

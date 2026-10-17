@@ -48,7 +48,7 @@ guaranteed.
 
 ### o3 (Maximum reasoning; API snapshot 2026-07-02)
 - DO: Keep prompts SHORT on built-in-reasoning snapshots, let it reason internally (snapshot-scoped, not universal)
-- DON'T: Demand explicit step-by-step reasoning, use few-shot examples, overload with instructions
+- DON'T (built-in-reasoning snapshots only — check your snapshot/surface; not a universal ban): demand explicit step-by-step reasoning where the model already reasons internally, add few-shot that duplicates native reasoning, overload with instructions the snapshot won't follow
 - `unverified`: "Formatting re-enabled" markdown trick — may help on some snapshots, not a verified rule
 
 ### Gemini 2.5 Pro (Latest info + long context; API snapshot 2026-07-02)
