@@ -1,0 +1,10 @@
+# Blind map (sealed until judging is recorded)
+
+Judging of authoring quality was done against the rubrics in
+`01-authoring-judgment.md` referencing Lane A/B only. Mapping revealed after.
+Labels alternate per task to defeat position bias.
+
+- FQA-1: A = OLD (6224aa4), B = NEW (443acc2)
+- FQA-2: A = NEW (443acc2), B = OLD (6224aa4)
+- FQA-3: A = OLD (6224aa4), B = NEW (443acc2)
+- FQA-4: A = NEW (443acc2), B = OLD (6224aa4)
