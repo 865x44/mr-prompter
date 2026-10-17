@@ -1016,7 +1016,7 @@
       "name": "Contract Core Pattern",
       "category": "system",
       "when_to_use": "Almost always; 10+ message sessions",
-      "structure": "Role → Rules → Format → Injections → Memory"
+      "structure": "Goal → Authoritative inputs → Hard constraints → Success criteria → Expected output → Failure/uncertainty behavior (+ runtime envelope as applicability qualifier)"
     },
     {
       "id": "identity-instructions-examples",
@@ -1116,9 +1116,9 @@
         "claude-4"
       ],
       "notes": [
-        "Use XML tags for structure",
-        "Place documents at TOP, queries at BOTTOM",
-        "Enable extended thinking for complex tasks"
+        "Use XML tags where the target surface parses them as structure (Anthropic API snapshot 2026-07-02; unverified heuristic on chat UIs — re-check your runner)",
+        "Place documents at TOP, queries at BOTTOM on long-context API calls (snapshot 2026-07-02; chat-template behavior varies — unverified heuristic, check your runner)",
+        "Enable extended thinking for complex tasks only on Thinking variants / explicit effort params (built-in reasoning there — unverified for non-Thinking snapshots)"
       ]
     },
     {
@@ -1127,8 +1127,8 @@
         "gpt-4"
       ],
       "notes": [
-        "Use Markdown sections + few-shot examples",
-        "Clear, structured instructions work best"
+        "Use Markdown sections + few-shot examples where the output shape resists declarative spec (API snapshot 2026-07-02; unverified heuristic — check your runner)",
+        "Clear, structured instructions work best (snapshot-scoped; hierarchy behavior is snapshot-dependent — do not rely on system-prompt enforcement over conflicting user text)"
       ]
     },
     {
@@ -1137,9 +1137,9 @@
         "o3"
       ],
       "notes": [
-        "**SHORT prompts only**",
-        "**NO explicit CoT instructions** — built-in reasoning",
-        "Add 'Formatting re-enabled' if needed"
+        "**SHORT prompts only** (o-series snapshot 2026-07-02 — built-in reasoning models; brevity is snapshot-scoped, not universal)",
+        "**NO explicit CoT instructions** on built-in-reasoning snapshots — unverified heuristic for future snapshots, check your runner",
+        "'Formatting re-enabled' markdown trick: unverified heuristic, may help on some snapshots — not a verified rule"
       ]
     },
     {
@@ -1148,9 +1148,9 @@
         "gemini-3"
       ],
       "notes": [
-        "Short, direct instructions",
-        "Place data BEFORE instructions for long context",
-        "Avoid negative constraints, use positive framing"
+        "Short, direct instructions (Gemini API snapshot 2026-07-02)",
+        "Place data BEFORE instructions for long-context API calls (snapshot 2026-07-02; surface-dependent — unverified heuristic, check your runner)",
+        "Avoid negative constraints without positive framing (snapshot-scoped; unverified heuristic — check your runner)"
       ]
     },
     {
@@ -1159,9 +1159,9 @@
         "deepseek"
       ],
       "notes": [
-        "**NO system message** — everything in user prompt",
-        "**NO few-shot examples** — degrades performance",
-        "Temperature 0.5-0.7, minimal prompt length"
+        "Put task content in the user prompt on surfaces without reliable system roles (API supports roles — check your runner; system-message behavior is surface-dependent)",
+        "CoT scaffolding on top of native reasoning: template-dependent heuristic, not a benchmark — unverified, check your runner",
+        "'Few-shot degrades performance' and fixed temperature 0.5-0.7: template-dependent heuristics, not benchmarks — unverified, check your runner"
       ]
     }
   ]

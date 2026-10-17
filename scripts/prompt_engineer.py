@@ -129,7 +129,7 @@ def cmd_get(args):
                     print(f"Category: {cat}")
                     print(f"When to use: {entry.get('when_to_use', 'N/A')}")
                     if entry.get('gain_reported'):
-                        print(f"Research gain: {entry['gain_reported']}")
+                        print(f"Research gain (historical baseline/era — not a guarantee on your runner): {entry['gain_reported']}")
                     print(f"Models: {', '.join(entry.get('models', []))}")
                     if entry.get('avoid_for'):
                         print(f"Avoid for: {', '.join(entry['avoid_for'])}")
@@ -283,13 +283,13 @@ def cmd_verify(args):
           f"{reds} critical, {yellows} warnings ---")
     print("--- Semantic review: not run (needs human or LLM judge) ---")
     print("--- Live effectiveness: not measured (needs eval runs) ---")
-    print("Verdict: ", end="")
+    print("Static lint: ", end="")
     if reds >= 2:
-        print("Major Rewrite")
+        print("FAIL")
     elif reds == 1 or yellows > 2:
-        print("Needs Fixes")
+        print("WARN")
     else:
-        print("Production-Ready")
+        print("PASS")
 
 
 def cmd_assemble(args):
@@ -349,7 +349,7 @@ def cmd_assemble(args):
         print(f"- **When:** {t['when_to_use']}")
         print(f"- **Tags:** {', '.join(t.get('tags', []))}")
         if t.get('gain_reported'):
-            print(f"- **Gain:** {t['gain_reported']}")
+            print(f"- **Gain (historical baseline/era — not a guarantee on your runner):** {t['gain_reported']}")
 
     print(f"\n## Model-Specific Notes:")
     note_groups = index.get("assemble_model_notes")

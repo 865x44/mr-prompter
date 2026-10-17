@@ -39,8 +39,8 @@ If unclear, ask: "Want to create, audit, improve, analyze a session, or extract 
 
 1. Run 10-dimension audit:
    - Structure, Hierarchy, Safety, Length, Model Fit, Anti-Patterns, Examples, Tone, Output Format, Iteration
-2. Score 0-10
-3. Report: score, top 3 issues with exact quotes, fixes, model-fit analysis
+2. Report: static lint PASS / WARN / FAIL + findings list (no numeric score, no Production-Ready without semantic review + live evaluation evidence)
+3. Report: top 3 issues with exact quotes, fixes, version/surface-scoped model-fit analysis (`unverified` where noted)
 
 ## IMPROVE Mode
 
@@ -51,7 +51,7 @@ If unclear, ask: "Want to create, audit, improve, analyze a session, or extract 
 
 ## CHAIN Mode
 
-For deep multi-angle analysis. Default chain:
+Justified steps only (K=1-first; K>1 only when each step earns it). Example skeleton, not a fixed 3-phase law:
 - Phase 1: 2-4 analytical perspectives (custom)
 - Phase 2: 360 Blind Spots (find what Phase 1 missed)
 - Phase 3: Distillation (consolidate everything)
@@ -89,8 +89,7 @@ For successful sessions. User pastes conversation log.
 - **Reflexion**: For iterative improvement. Reason in `<thinking>`, output in `<output>`, self-correct in `<reflection>`.
 - **Strategic Chain**: Phase 1 (perspectives) → Phase 2 (blind spots) → Phase 3 (distillation).
 
-### System / Architecture
-- **Contract Core**: Role → Rules → Format → Examples → Memory. Best for 10+ turn sessions.
+- **Contract Core**: Goal → Authoritative inputs → Hard constraints → Success criteria → Expected output → Failure/uncertainty behavior (+ runtime envelope). Best for 10+ turn sessions.
 - **XML Container**: `<documents>` for data, `<instructions>` for tasks. Clear boundaries.
 - **Data-top Query-bottom**: For long documents — data first, instructions last.
 - **Sandwich Defense**: Wrap untrusted content between trusted instructions + reminder.
@@ -133,13 +132,13 @@ For successful sessions. User pastes conversation log.
 
 ---
 
-## Platform-Specific Rules
+## Platform-Specific Rules (version/surface-scoped; `unverified` = heuristic, check your runner)
 
-- **Claude**: XML tags natively. Docs at TOP, query at BOTTOM (+30% quality). Extended thinking for goals, not steps.
-- **GPT-4o**: Few-shot examples highest leverage. System prompt weakly enforced vs user.
-- **o3**: SHORT prompts. NO "think step by step". Built-in reasoning. Add "Formatting re-enabled" for markdown.
-- **Gemini**: Instructions AFTER data. Avoid negative constraints. Temp >= 1.0 for reasoning.
-- **DeepSeek R1**: NO system message — user prompt only. NO few-shot examples. Temp 0.5-0.7. Uses `<think>` tags.
+- **Claude** (Anthropic API snapshot 2026-07-02): XML tags where the surface parses them as structure; docs TOP / query BOTTOM on long-context API calls; extended thinking on Thinking variants only.
+- **GPT-4o** (API snapshot 2026-07-02): Few-shot examples where output shape resists declarative spec; do not rely on system-prompt enforcement over conflicting user text (snapshot-dependent).
+- **o3** (snapshot 2026-07-02): SHORT prompts on built-in-reasoning snapshots; NO explicit CoT; "Formatting re-enabled" is unverified, not a rule.
+- **Gemini** (API snapshot 2026-07-02): Instructions AFTER data for long-context API calls (surface-dependent); avoid negative constraints without alternatives; temp >= 1.0 is API-only heuristic.
+- **DeepSeek R1** (API + chat templates 2026-07-02): user-prompt placement on surfaces without reliable system roles (API supports roles — check runner); no CoT scaffolding on native reasoning; "few-shot degrades" + temp 0.5–0.7 are template-dependent heuristics. Uses `<think>` tags.
 
 ## Meta-Rules
 

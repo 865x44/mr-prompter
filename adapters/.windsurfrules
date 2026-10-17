@@ -22,11 +22,11 @@ When the user asks about prompts, prompt optimization, model selection, or AI be
 
 ## GENERATE
 
-Structure: Role → Task → Constraints → Format → Examples → Safety. Pick 1-3 techniques from library. Deliver: prompt + model rec + techniques + testing guide.
+Compact contract (goal/inputs/constraints/criteria/output/failure-behavior) + conditional body. Pick 1-3 techniques from library. Deliver: prompt + model rec + techniques + testing guide.
 
 ## VERIFY
 
-10 dimensions: Structure, Hierarchy, Safety, Length, Model Fit, Anti-Patterns, Examples, Tone, Output Format, Iteration. Score 0-10. Deliver: score + top 3 issues + fixes.
+10 dimensions: Structure, Hierarchy, Safety, Length, Model Fit, Anti-Patterns, Examples, Tone, Output Format, Iteration. Deliver: static lint PASS / WARN / FAIL + top 3 findings (no score, no Production-Ready without semantic review + live evaluation evidence).
 
 ## IMPROVE
 
@@ -34,7 +34,7 @@ Run VERIFY → classify issues → surgical fixes → before/after + rationale.
 
 ## CHAIN
 
-Phase 1: 2-4 perspectives → Phase 2: Blind Spots → Phase 3: Distillation. Optional: +Ecosystem Scout, +Master Synthesis.
+Justified steps only (K=1-first; K>1 only when each step earns it). Example: Phase 1: 2-4 perspectives → Phase 2: Blind Spots → Phase 3: Distillation. Optional: +Ecosystem Scout, +Master Synthesis.
 
 ## DIAGNOSE
 
@@ -42,7 +42,7 @@ User pastes conversation log. Parse turns → identify failure patterns → prod
 
 ## EXTRACT
 
-User pastes successful conversation. Extract: Role, Task, Constraints, Format, Examples. Build standalone prompt < 800 tokens. Strip iterative noise.
+User pastes successful conversation. Extract conditional blocks (role only if load-bearing, 1–2 minimal examples only when shape resists declarative spec). Build standalone prompt < 800 tokens. Strip iterative noise.
 
 ---
 
@@ -54,8 +54,7 @@ User pastes successful conversation. Extract: Role, Task, Constraints, Format, E
 - **CoV**: Draft → verify questions → answer independently → revise.
 - **Strategic Chain**: Perspectives → Blind Spots → Distillation.
 
-### System
-- **Contract Core**: Role → Rules → Format → Examples → Memory.
+- **Contract Core**: Goal → Authoritative inputs → Hard constraints → Success criteria → Expected output → Failure/uncertainty behavior (+ runtime envelope).
 - **XML Container**: `<documents>` for data, `<instructions>` for tasks.
 - **Sandwich Defense**: Wrap untrusted content between trusted instructions.
 - **Progressive Disclosure**: Index → Search → Deep Dive.
@@ -91,8 +90,8 @@ User pastes successful conversation. Extract: Role, Task, Constraints, Format, E
 
 ## Platform Rules
 
-- **Claude**: XML tags, docs TOP query BOTTOM, extended thinking
-- **GPT-4o**: Few-shot highest leverage, system prompt weak
-- **o3**: SHORT, NO CoT, "Formatting re-enabled"
-- **Gemini**: Instructions AFTER data, temp >= 1.0
-- **DeepSeek R1**: NO system msg, NO few-shot, temp 0.5-0.7
+- **Claude** (API 2026-07-02): XML tags where parsed as structure, docs TOP / query BOTTOM on long-context API calls, extended thinking on Thinking variants
+- **GPT-4o** (API 2026-07-02): Few-shot where shape resists declarative spec, system prompt weak vs conflicting user text (snapshot-dependent)
+- **o3** (2026-07-02): SHORT on built-in-reasoning snapshots, NO CoT, "Formatting re-enabled" unverified
+- **Gemini** (API 2026-07-02): Instructions AFTER data on long-context API calls (surface-dependent), temp >= 1.0 API-only heuristic
+- **DeepSeek R1** (API + chat templates 2026-07-02): user-prompt placement where system roles unreliable (API supports roles); "few-shot degrades" + temp 0.5-0.7 template-dependent heuristics

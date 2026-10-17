@@ -39,26 +39,26 @@ Dynamic model recommendation for any prompt engineering task.
 guaranteed.
 
 ### Claude 4 Sonnet (Default for most tasks; API snapshot 2026-07-02)
-- DO: XML tags, explicit data/instruction ordering where appropriate, extended thinking for complex goals (Thinking variants / explicit effort params)
-- DON'T: Over-explain, add CoT scaffolding on Thinking variants (built-in reasoning there — `unverified` for non-Thinking snapshots), use negative constraints without alternatives
+- DO: XML tags where the target surface parses them as structure, explicit data/instruction ordering where appropriate, extended thinking for complex goals (Thinking variants / explicit effort params — unverified for non-Thinking snapshots)
+- DON'T: Over-explain, add CoT scaffolding on Thinking variants, use negative constraints without alternatives
 
 ### GPT-4.1 (Creative + JSON mode; API snapshot 2026-07-02)
-- DO: Few-shot examples (highest leverage), Markdown sections, structured JSON output
+- DO: Few-shot examples where the output shape resists declarative spec (highest leverage on this surface — unverified heuristic, check your runner), Markdown sections, structured JSON output
 - DON'T: Rely on system prompt enforcement over conflicting user text (`unverified` — hierarchy behavior is snapshot-dependent), assume it follows complex hierarchies
 
 ### o3 (Maximum reasoning; API snapshot 2026-07-02)
-- DO: Keep prompts SHORT, let it reason internally
+- DO: Keep prompts SHORT on built-in-reasoning snapshots, let it reason internally (snapshot-scoped, not universal)
 - DON'T: Demand explicit step-by-step reasoning, use few-shot examples, overload with instructions
 - `unverified`: "Formatting re-enabled" markdown trick — may help on some snapshots, not a verified rule
 
 ### Gemini 2.5 Pro (Latest info + long context; API snapshot 2026-07-02)
-- DO: Place instructions AFTER data for long-context API calls, leverage 2M context
-- DON'T: Use negative constraints without positive alternatives
+- DO: Place instructions AFTER data for long-context API calls (snapshot-scoped; surface-dependent), leverage 2M context
+- DON'T: Use negative constraints without positive alternatives (unverified heuristic — check your runner)
 - `unverified`: temperature >= 1.0 for reasoning — API-only heuristic, not measured across surfaces; do not go below overall task-appropriate settings blindly
 
 ### DeepSeek R1 (Code + cost efficiency; API + common chat templates, 2026-07-02)
-- DO: Put task content in the user prompt on surfaces without reliable system roles, let internal reasoning work
-- DON'T: Assume system-message support on every surface (API supports roles — check your runner); CoT scaffolding on top of its native reasoning
+- DO: Put task content in the user prompt on surfaces without reliable system roles (API supports roles — check your runner), let internal reasoning work
+- DON'T: Assume system-message support on every surface; CoT scaffolding on top of its native reasoning (template-dependent — unverified, check your runner)
 - `unverified`: "few-shot degrades performance" and fixed temperature 0.5–0.7 — template-dependent heuristics, not benchmarks
 
 ### Sonar (Speed + real-time info; Perplexity-hosted, 2026-07-02)

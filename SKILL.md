@@ -75,10 +75,15 @@ Run this check before Mode Selection on every request. Score against two signal 
 
 When triggered: name signals fired -> propose chain skeleton (N phases, what each digests/outputs) -> ask "Generate as chain or single prompt?"
 
-**Platform note for large-corpus tasks**:
-- Gemini 2.5 Pro (2M+ ctx): data fits, but multi-task prompts degrade -> use Extraction prompt first, then Analysis
-- Claude (200K ctx): may need chunking for 500KB+; chain mandatory above ~150K tokens
-- GPT-4o (128K ctx): chain almost always required for 5+ large files
+The Gate decides WHETHER to consider decomposition — it never mandates it.
+CHAIN §Step 1 (K=1-first) is the authority: a large corpus may legitimately
+stay K=1 (one prompt) when a single pass can digest the inputs and produce
+the artifact. Token-window size alone never forces a chain.
+
+**Platform note for large-corpus tasks (delivery tactics, not mandates):**
+- Gemini 2.5 Pro (2M+ ctx): data fits, but multi-task prompts degrade -> consider an Extraction prompt first, then Analysis; K=1 stays legal.
+- Claude (200K ctx): may need chunking for 500KB+ inputs; chunking is a delivery tactic the Gate may propose, not a verdict.
+- GPT-4o (128K ctx): for 5+ large files propose a chain skeleton as one option alongside K=1; a single prompt stays legal.
 
 ## Mode Selection
 
@@ -137,7 +142,7 @@ python scripts/prompt_engineer.py search "<task_keyword>" --model <model> --cate
 ```
 
 Select:
-1. **1 structural pattern** (contract core / identity-instructions-examples / XML-container)
+1. **1 structural pattern** (contract core — goal/inputs/constraints/criteria/output/failure-behavior — / identity-instructions-examples / XML-container)
 2. **1-3 techniques** matched to task type and model compatibility (check `avoid_for` in index)
 3. **Safety module** if processing untrusted data or sensitive domains
 4. **Model-specific adaptations** from `references/models.md`
@@ -229,8 +234,12 @@ Do NOT define semantics with regexes; the CLI lint stays lexical.
 - Level 2 `semantic/LLM review`: quote-level findings list (empty = clean).
 - Level 3 `live/task evaluation`: `not evaluated` unless real runs exist —
   never infer effectiveness from Levels 1–2.
-- Overall verdict: Production-Ready / Needs Fixes / Major Rewrite (same scale
-  as the CLI; a Level-2 Critical blocks Production-Ready by itself).
+- Overall verdict (integral, stated ONLY with the checks behind it): `Static
+  lint: PASS / WARN / FAIL` (machine structural status from the CLI) plus the
+  Level-2 finding list and the Level-3 applicability note. The word
+  `Production-Ready` is FORBIDDEN as a standalone deliver — it requires
+  semantic review + live evaluation evidence, named explicitly. A Level-2
+  Critical blocks any production claim by itself.
 
 **3. Suggested Fixes** — specific rewrite per finding (before/after), KB
 technique reference where applicable.
@@ -512,17 +521,19 @@ specific bulk, and one-off filler — but NEVER strip domain constraints
 that correctness depends on (thresholds, safety bounds, required fields).
 When in doubt whether a constraint is load-bearing, keep it and mark WHY.
 
-From the log, extract:
-- **Role**: Persona that produced best output
+From the log, extract (each block conditional, same rules as GENERATE §Step 4):
+- **Role**: only if the task needs a stable viewpoint or expertise frame — no decorative personas.
 - **Task**: Core instruction, stripped of iterative noise
 - **Constraints**: Boundaries learned from corrections
 - **Format**: Structure of successful outputs
-- **Examples**: 2-3 best LLM responses as few-shot examples
+- **Examples**: include only when the output shape is hard to specify declaratively (prefer 1–2 minimal over a fixed 3–5)
 - **Anti-patterns**: What NOT to do (from rejected outputs)
 
 ### Step 3 — Assemble and Validate
 
-Build layered prompt: Role → Task → Constraints → Format → Examples.
+Build the compact contract (goal/inputs/constraints/criteria/output/
+failure-behavior) plus the smallest sufficient prompt body — conditional
+blocks only, never a fixed Role→Rules→Format→Injections→Memory template.
 
 Validate against checklist from `references/extract.md`:
 - Would this prompt produce the final successful output without the conversation?
@@ -574,9 +585,9 @@ This skill is a **prompt engineering toolkit** — like an IDE for prompts. It h
 | I want to... | Use mode | What I provide | What I get |
 |---|---|---|---|
 | Write a new prompt from scratch | **GENERATE** | Description of the task | Ready-to-use prompt + model recommendation |
-| Check if my prompt is good | **VERIFY** | The prompt text | Score + issues + fixes |
+| Check if my prompt is good | **VERIFY** | The prompt text | Findings (static lint PASS/WARN/FAIL + semantic quote-level findings) + fixes |
 | Fix/improve an existing prompt | **IMPROVE** | The prompt text | Rewritten prompt + what changed |
-| Build a multi-step analysis | **CHAIN** | Topic + goals | Series of connected prompts (Phase 1→2→3) |
+| Build a multi-step analysis | **CHAIN** | Topic + goals | Justified step count (K=1-first; K>1 only when each step earns it) |
 | Pick the best AI model | **MODEL SELECT** | Description of task | Model recommendation + rationale |
 | **Figure out why a session failed** | **DIAGNOSE** | **Conversation log** | Exact failure points + concrete patches |
 | **Save a good session as reusable prompt** | **EXTRACT** | **Successful chat log** | Standalone reusable prompt template |

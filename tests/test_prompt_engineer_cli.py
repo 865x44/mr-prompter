@@ -153,13 +153,13 @@ class TestAssemble(unittest.TestCase):
         self.assertIn("Prompt Assembly Scaffold", result.stdout)
 
     def test_assemble_model_notes_data_driven(self):
-        """Model notes come from index.json assemble_model_notes; one probe per group."""
+        """Model notes come from index.json assemble_model_notes; conditioned form."""
         expected = {
-            "claude": "Use XML tags for structure",
-            "gpt-4o": "Use Markdown sections + few-shot examples",
-            "o1": "**NO explicit CoT instructions** — built-in reasoning",
-            "gemini": "Place data BEFORE instructions for long context",
-            "deepseek": "**NO system message** — everything in user prompt",
+            "claude": "unverified heuristic",
+            "gpt-4o": "unverified heuristic",
+            "o1": "unverified heuristic",
+            "gemini": "unverified heuristic",
+            "deepseek": "unverified",
         }
         for model, note in expected.items():
             with self.subTest(model=model):
@@ -169,7 +169,15 @@ class TestAssemble(unittest.TestCase):
                     text=True,
                 )
                 self.assertEqual(result.returncode, 0)
-                self.assertIn(f"- {note}", result.stdout)
+                self.assertIn(note, result.stdout)
+        # No unconditional family absolutes may survive in the emitted notes.
+        for model in expected:
+            result = subprocess.run(
+                CLI + ["assemble", "--model", model, "--category", "system"],
+                capture_output=True,
+                text=True,
+            )
+            self.assertNotIn("always", result.stdout.lower())
 
     def test_assemble_unknown_model_no_notes(self):
         result = subprocess.run(
@@ -248,21 +256,24 @@ class TestWave0VerifyHonesty(unittest.TestCase):
         finally:
             Path(path).unlink()
 
-    def test_verify_contradictory_prompt_no_production_verdict(self):
+    def test_verify_contradictory_prompt_no_pass(self):
         result = self._verify(self.CONTRADICTORY)
         self.assertEqual(result.returncode, 0)
-        self.assertIn("Major Rewrite", result.stdout)
+        self.assertIn("Static lint: FAIL", result.stdout)
+        self.assertNotIn("Static lint: PASS", result.stdout)
         self.assertNotIn("Production-Ready", result.stdout)
         self.assertIn("Semantic review: not run", result.stdout)
         self.assertIn("Live effectiveness: not measured", result.stdout)
 
-    def test_verify_valid_prompt_no_false_rewrite(self):
+    def test_verify_valid_prompt_no_fail(self):
         result = self._verify(self.VALID)
         self.assertEqual(result.returncode, 0)
-        self.assertNotIn("Major Rewrite", result.stdout)
+        self.assertNotIn("Static lint: FAIL", result.stdout)
 
     def test_verify_scale_matches_skill(self):
         result = self._verify(self.VALID)
+        self.assertIn("Static lint:", result.stdout)
+        self.assertNotIn("Production-Ready", result.stdout)
         self.assertNotIn("PRODUCTION-READY", result.stdout)
         self.assertNotIn("GOOD", result.stdout)
 

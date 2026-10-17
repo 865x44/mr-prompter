@@ -3,22 +3,22 @@
 Adversarial twins runner (Wave 1, §3.4).
 
 Each pair in fixtures/twins/w1-<pair>-{defective,valid}.md carries an
-EXPECT header: `flagged` (verdict must NOT be Production-Ready) or `clean`
-(verdict must NOT be Major Rewrite). `#` documentation lines are stripped
+EXPECT header: `flagged` (static lint must NOT be PASS) or `clean`
+(static lint must NOT be FAIL). `#` documentation lines are stripped
 before verification — the auditor sees the EXECUTABLE prompt text only
 (§3.3), never the fixture's own commentary.
 
 Measures BOTH defect detection AND false accusations on the valid twins.
 
 KNOWN LIMITATIONS (documented, not hidden) — Level-1 lint is lexical by
--design (§3.3 forbids regex semantics). Two defect classes are therefore
+design (§3.3 forbids regex semantics). Two defect classes are therefore
 `lint-blind`: the EXPECT header says so, and the runner asserts honesty
-(banner + clean exit) while RECORDING the verdict instead of demanding a flag:
+(banner + clean exit) while RECORDING the lint status instead of demanding a flag:
 - Pair B (incompatible JSON clauses): clause-level incompatibility needs
   Level-2 review quoting both clauses.
 - Pair D (missing success criterion): needs a Level-2 undefined-criteria
   finding with the exact quote.
-- Pair C: verdict-level tie (Needs Fixes / Needs Fixes); split is visible
+- Pair C: lint-level tie (WARN / WARN); split is visible
   only in the red count (defective >= 1 red, valid == 0).
 """
 
@@ -65,9 +65,9 @@ def verify(text):
 
 
 def parse_result(stdout):
-    verdict = re.search(r"^Verdict:\s*(.+)$", stdout, re.MULTILINE).group(1).strip()
+    lint = re.search(r"^Static lint:\s*(.+)$", stdout, re.MULTILINE).group(1).strip()
     reds = int(re.search(r"(\d+) critical", stdout).group(1))
-    return verdict, reds
+    return lint, reds
 
 
 class TestTwins(unittest.TestCase):
@@ -87,31 +87,31 @@ class TestTwins(unittest.TestCase):
                                    "Semantic review: not run",
                                    "Live effectiveness: not measured"):
                         self.assertIn(banner, result.stdout, path.name)
-                    verdict, _ = parse_result(result.stdout)
+                    lint, _ = parse_result(result.stdout)
                     if expect == "flagged":
                         self.assertNotEqual(
-                            verdict, "Production-Ready",
-                            f"{path.name}: defective prompt got a production verdict",
+                            lint, "PASS",
+                            f"{path.name}: defective prompt passed static lint",
                         )
                     elif expect == "clean":
                         self.assertNotEqual(
-                            verdict, "Major Rewrite",
-                            f"{path.name}: valid prompt falsely accused",
+                            lint, "FAIL",
+                            f"{path.name}: valid prompt failed static lint",
                         )
                     else:  # lint-blind: record, don't demand
-                        print(f"\n[lint-blind] {path.name} verdict: {verdict}")
+                        print(f"\n[lint-blind] {path.name} lint: {lint}")
 
     def test_pair_a_verdict_split(self):
-        """Pair A must split at verdict level: defective strictly worse."""
+        """Pair A must split at lint level: defective strictly worse."""
         _, dt = load_fixture(FIXTURES / "w1-a-defective.md")
         _, vt = load_fixture(FIXTURES / "w1-a-valid.md")
         dv, _ = parse_result(verify(dt).stdout)
         vv, _ = parse_result(verify(vt).stdout)
-        self.assertEqual(dv, "Major Rewrite")
-        self.assertNotEqual(vv, "Major Rewrite")
+        self.assertEqual(dv, "FAIL")
+        self.assertNotEqual(vv, "FAIL")
 
     def test_pair_c_red_count_split(self):
-        """Pair C splits on red count even though verdicts tie at Needs Fixes."""
+        """Pair C splits on red count even though lint ties at WARN."""
         _, dt = load_fixture(FIXTURES / "w1-c-defective.md")
         _, vt = load_fixture(FIXTURES / "w1-c-valid.md")
         _, dreds = parse_result(verify(dt).stdout)

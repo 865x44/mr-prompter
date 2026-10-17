@@ -34,35 +34,29 @@ Read the conversation and extract:
 
 From the successful turns, extract these building blocks:
 
-| Component | Source in Log | What to Capture |
-|-----------|---------------|-----------------|
-| **Role** | User's persona assignments | "You are a..." that produced best output |
+| Component | Source in Log | What to Capture (each conditional — same rules as SKILL GENERATE §Step 4) |
+|-----------|---------------|--------------------------------------------------------------|
+| **Role** | User's persona assignments | Stable viewpoint/expertise frame ONLY if the task needs one — no decorative personas |
 | **Task** | Original ask + refinements | Core instruction, stripped of context |
 | **Constraints** | Corrections where LLM went wrong | Boundaries that kept output on track |
 | **Format** | Successful outputs | Output structure that worked |
-| **Examples** | Best LLM responses | 2-3 examples of desired output |
+| **Examples** | Best LLM responses | 1–2 minimal examples ONLY when the output shape resists declarative spec |
 | **Anti-patterns** | Rejected outputs | What NOT to do (from corrections) |
-| **Tone** | User's style adjustments | Voice that matched expectations |
+| **Tone** | User's style adjustments | Voice contract ONLY if tone was load-bearing in the log |
 
 ### Step 3 — Build the Prompt
 
-Assemble in layered structure:
+Assemble the compact contract (goal/inputs/constraints/criteria/output/
+failure-behavior) plus the smallest sufficient prompt body — conditional
+blocks only, never a fixed Role→Rules→Format→Injections→Memory template:
 
 ```
-# Identity / Role
-Who the model should be (from successful persona in log)
+# Compact contract (goal / authoritative inputs / hard constraints /
+# success criteria / expected output / failure behavior)
 
-# Task
-What to do (core ask, refined through iteration)
-
-# Rules / Constraints
-What the model learned NOT to do (from corrections)
-
-# Output Format
-Structure of successful outputs (with example)
-
-# Context / Data Container
-How to handle user inputs (if applicable)
+# Body (include a section ONLY with a substantive reason)
+Role (conditional) / Task / Constraints / Format (conditional) /
+Examples (conditional, 1-2 minimal) / Data container (conditional)
 ```
 
 Keep it minimal: include only what was NECESSARY to get good results. Strip conversational filler, iterative noise, and one-off context.
@@ -115,7 +109,7 @@ Every EXTRACT output follows this structure:
 
 **2. Extracted Prompt**
 - Ready-to-use prompt in code block
-- Layered: Role → Task → Constraints → Format → Examples
+- Compact contract + conditional body (no fixed Role → Task → Constraints → Format → Examples template)
 
 **3. What Was Removed**
 - Iterative noise that didn't make it into the prompt

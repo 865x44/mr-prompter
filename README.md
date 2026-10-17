@@ -42,9 +42,9 @@ You describe the task → Skill builds the optimal prompt → You use the prompt
 | Mode | You say... | You get... | When to use |
 |------|-----------|------------|-------------|
 | **GENERATE** | "Write me a prompt for X" | Ready-to-use prompt + model recommendation + security check | Starting from scratch |
-| **VERIFY** | "Check this prompt" / "Audit this" | Score (0-10) + specific issues + fixes | Before deploying a prompt |
+| **VERIFY** | "Check this prompt" / "Audit this" | Findings (static lint PASS/WARN/FAIL + semantic findings) + fixes | Before deploying a prompt |
 | **IMPROVE** | "Make this prompt better" | Rewritten prompt + what changed + why | Iterating on existing prompt |
-| **CHAIN** | "Deep analysis of X" / "Build a prompt chain" | Multi-phase analysis (2-4 sequential prompts) | Complex topics needing multiple angles |
+| **CHAIN** | "Deep analysis of X" / "Build a prompt chain" | Justified step count (K=1-first; K>1 only when each step earns it) | Complex topics needing multiple angles |
 | **MODEL SELECT** | "Which model for X?" | Primary + alternative + rationale | Choosing the right AI model |
 | **DIAGNOSE** | "What went wrong?" / "Analyze this session" | Exact failure points + concrete patches + metrics | After a session derailed |
 | **EXTRACT** | "Turn this chat into a prompt" | Reusable prompt from conversation | Saving successful patterns |
@@ -122,8 +122,8 @@ Session went great, save it? ──────→ EXTRACT
 **You:** "I need to understand the competitive landscape for AI coding assistants. Do a deep analysis."
 
 **Skill does:**
-1. Assesses complexity → triggers CHAIN mode
-2. Builds 3-phase chain:
+1. Assesses complexity → proposes chain skeleton OR single prompt (K=1-first; K stays legal)
+2. Builds justified chain (example: 3 phases, each step earning its place):
    - **Phase 1** (2 perspectives): Product Manager lens + Engineer lens, each with 3 specific questions
    - **Phase 2** (Blind Spots): Find what both perspectives missed
    - **Phase 3** (Distillation): Consolidate into actionable report
