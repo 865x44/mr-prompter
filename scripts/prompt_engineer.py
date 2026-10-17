@@ -247,7 +247,12 @@ def cmd_verify(args):
 
         ("CRITICAL: No self-overriding directives (ignore-above / do-the-opposite)",
          "red",
-         not has(r'ignore (all |the )?(previous|above)|disregard .{0,40}(previous|above)|do the opposite|игнорируй .{0,40}(выше|предыдущ)')),
+         not has(r'ignore (all |the )?(previous|above)|disregard .{0,40}(previous|above)|do the opposite|follow (them|it) instead|игнорируй .{0,40}(выше|предыдущ)')),
+
+        ("Output shape: declared JSON/schema is backed by a field list",
+         "yellow",
+         not has(r'\bjson\b|output format[:\s]+json|strict schema|output schema') or
+         has(r'field[s]?[:\s]|key[s]?[:\s]|schema[:\s]|\"[a-z_]+\":|properties[:\s]')),
     ]
 
     for name, severity, passed in checks:
@@ -316,10 +321,26 @@ def cmd_assemble(args):
 
     selected_techniques = compatible[:3]
 
-    print(f"# Prompt Assembly Scaffold")
+    print(f"# Prompt Assembly Scaffold (compact contract)")
     print(f"\n**Goal:** {goal_text[:200] if goal_text else '(not specified)'}")
     print(f"**Target Model:** {model}")
     print(f"**Category:** {category}")
+    print("\n## Compact Contract (fill unknowns before production use)")
+    print("**Authoritative inputs:** "
+          f"{(goal_text[:200] if goal_text else 'unknown/depends on runner')}")
+    print("**Hard constraints:** unknown/depends on runner "
+          "(output shape, taboos, safety bounds — state the 1-3 that bind)")
+    print("**Success criteria:** unknown/depends on runner "
+          "(1-3 observable checks required)")
+    print("**Expected output:** shape + length budget to be fixed from constraints")
+    print("**Failure/uncertainty behavior:** unspecified — default to asking, "
+          "not guessing")
+    print("**Runtime envelope:** surface=unknown/depends on runner, "
+          "reasoning budget=unknown, output-token cap=unknown, "
+          "strict schema/citations=unknown, tool permissions=none assumed. "
+          "This scaffold alone guarantees no JSON shape, provenance, or replay.")
+    print("**JSON-truncation risk:** not assessable — flag only once a real "
+          "output cap is known.")
     if selected_pattern:
         print(f"\n## Recommended Structure: {selected_pattern['name']}")
     print(f"\n## Suggested Techniques:")
@@ -335,11 +356,16 @@ def cmd_assemble(args):
     if not note_groups:
         print("ERROR: knowledge/index.json is missing 'assemble_model_notes'", file=sys.stderr)
         sys.exit(1)
+    matched = False
     for group in note_groups:
         if model in [a.lower() for a in group.get("aliases", [])]:
             for note in group.get("notes", []):
                 print(f"- {note}")
+            matched = True
             break
+    if not matched:
+        print("- unknown/depends on runner: model ID not in KB, "
+              "no model-specific notes applied")
 
 
 def main():

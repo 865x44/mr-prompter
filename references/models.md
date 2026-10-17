@@ -4,6 +4,8 @@ Dynamic model recommendation for any prompt engineering task.
 
 ## Decision Tree
 
+> Defaults, not verdicts: each arrow is a starting hypothesis scoped by the
+> version/surface notes below. `unverified` where noted.
 ```
 1. Speed Priority (real-time, casual) -> Sonar / GPT-4o-mini
 2. Maximum Reasoning (complex analysis, multi-step) -> Claude 4 Sonnet / o3 / DeepSeek R1
@@ -30,27 +32,36 @@ Dynamic model recommendation for any prompt engineering task.
 
 ## Model-Specific Do's and Don'ts
 
-### Claude 4 Sonnet (Default for most tasks)
-- DO: XML tags, explicit data/instruction ordering where appropriate, extended thinking for complex goals
-- DON'T: Over-explain, add CoT scaffolding (it has built-in reasoning), use negative constraints without alternatives
+> Scope: vendor API snapshots as of 2026-07-02 verification (OpenAI / Anthropic /
+> Google / DeepSeek platform docs). Chat UIs, coding-agent wrappers, and local
+> runners change effective behavior — re-check per surface. Any rule below tagged
+> `unverified` is a working heuristic, not a measured fact: do not present it as
+guaranteed.
 
-### GPT-4.1 (Best for creative + JSON mode)
+### Claude 4 Sonnet (Default for most tasks; API snapshot 2026-07-02)
+- DO: XML tags, explicit data/instruction ordering where appropriate, extended thinking for complex goals (Thinking variants / explicit effort params)
+- DON'T: Over-explain, add CoT scaffolding on Thinking variants (built-in reasoning there — `unverified` for non-Thinking snapshots), use negative constraints without alternatives
+
+### GPT-4.1 (Creative + JSON mode; API snapshot 2026-07-02)
 - DO: Few-shot examples (highest leverage), Markdown sections, structured JSON output
-- DON'T: Rely on system prompt enforcement (weak vs user message), assume it follows complex hierarchies
+- DON'T: Rely on system prompt enforcement over conflicting user text (`unverified` — hierarchy behavior is snapshot-dependent), assume it follows complex hierarchies
 
-### o3 (Best for maximum reasoning)
-- DO: Keep prompts SHORT, let it reason internally, add "Formatting re-enabled" for markdown
+### o3 (Maximum reasoning; API snapshot 2026-07-02)
+- DO: Keep prompts SHORT, let it reason internally
 - DON'T: Demand explicit step-by-step reasoning, use few-shot examples, overload with instructions
+- `unverified`: "Formatting re-enabled" markdown trick — may help on some snapshots, not a verified rule
 
-### Gemini 2.5 Pro (Best for latest info + long context)
-- DO: Place instructions AFTER data, use temperature >= 1.0 for reasoning, leverage 2M context
-- DON'T: Use negative constraints without positive alternatives, go below 1.0 temperature
+### Gemini 2.5 Pro (Latest info + long context; API snapshot 2026-07-02)
+- DO: Place instructions AFTER data for long-context API calls, leverage 2M context
+- DON'T: Use negative constraints without positive alternatives
+- `unverified`: temperature >= 1.0 for reasoning — API-only heuristic, not measured across surfaces; do not go below overall task-appropriate settings blindly
 
-### DeepSeek R1 (Best for code + cost efficiency)
-- DO: Put EVERYTHING in user prompt (no system message), temperature 0.5-0.7, let internal reasoning work
-- DON'T: Use system messages, few-shot examples (degrades performance), or CoT scaffolding
+### DeepSeek R1 (Code + cost efficiency; API + common chat templates, 2026-07-02)
+- DO: Put task content in the user prompt on surfaces without reliable system roles, let internal reasoning work
+- DON'T: Assume system-message support on every surface (API supports roles — check your runner); CoT scaffolding on top of its native reasoning
+- `unverified`: "few-shot degrades performance" and fixed temperature 0.5–0.7 — template-dependent heuristics, not benchmarks
 
-### Sonar (Best for speed + real-time info)
+### Sonar (Speed + real-time info; Perplexity-hosted, 2026-07-02)
 - DO: Quick queries, factual lookups, real-time research
 - DON'T: Complex multi-step reasoning, creative writing, sensitive analysis
 
